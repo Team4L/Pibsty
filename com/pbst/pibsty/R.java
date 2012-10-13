@@ -33,6 +33,8 @@ public final class R
 		public final Texture ground = new Texture(Gdx.files.internal("ground.png"));
 		public final Texture containerEdge = new Texture(Gdx.files.internal("containerEdge.png"));
 		public final Texture firingArea = new Texture(Gdx.files.internal("firingarea.png"));
+		public final Texture pepper = new Texture(Gdx.files.internal("pepper.png"));
+		public final Texture thing = new Texture(Gdx.files.internal("thing.png"));
 	}
 	
 	//	A set of physics materials for easy access to properties such as friction etc
