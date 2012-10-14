@@ -57,7 +57,7 @@ public class TetrisLevel implements IScreen{
 		
 		createGameObject(new Pixels(650-148), new Pixels(65), new Pixels(16), new Pixels(256), R.Textures.containerEdge, BodyType.StaticBody, false, "containerEdge");	// container Left Edge
 		createGameObject(new Pixels(650+128), new Pixels(128+89), new Pixels(16), new Pixels(256), R.Textures.containerEdge, BodyType.StaticBody, false, "containerEdge");	// container Right Edge
-		createGameObject(new Pixels(0), new Pixels(0), new Pixels(800), new Pixels(89), R.Textures.ground, BodyType.StaticBody, false, "ground");				// Ground
+		createGameObject(new Pixels(400), new Pixels(0), new Pixels(800), new Pixels(89), R.Textures.ground, BodyType.StaticBody, false, "ground");				// Ground
 		
 		ThrowableObj box = new ThrowableObj(new Pixels(700), new Pixels(400), new Pixels(32), new Pixels(32), R.Materials.block, world_, R.Textures.pepper, "pepper", gameObjects_, spriteList_);
 		ThrowableObj moon = new ThrowableObj(new Pixels(100), new Pixels(400), new Pixels(85), new Pixels(92), R.Materials.block, world_, R.Textures.thing, "thing", gameObjects_, spriteList_);
@@ -78,16 +78,12 @@ public class TetrisLevel implements IScreen{
 	
 		Boolean currentFrame = IsLevelAsleep();
 		
-		// if container was active last frame
 		if (currentFrame && !lastFrame)
 		{
-			// Update Container
 			container.Update();
 		}
-		// else if container was not active last frame
 		//else if (currentFrame && lastFrame)
 		{
-			// players turn	
 			TakePlayerTurn();
 		}	
 		

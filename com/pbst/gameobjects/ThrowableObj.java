@@ -28,10 +28,9 @@ public class ThrowableObj extends GameObject
 		bodyDef.fixedRotation = false;
 		
 		FixtureDef fd = material.toFixtureDef();
-		fd.density = 0.2F;
 		
 		_body = world.createBody(bodyDef);
-		bodyLoader.attachFixture(_body, bodyName, fd, 0.5F);
+		bodyLoader.attachFixture(_body, bodyName, fd, 1);
 		
 		_sprite = new Sprite(texture);
 		_sprite.setPosition(x.value(), y.value());
