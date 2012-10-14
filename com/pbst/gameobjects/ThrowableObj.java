@@ -18,9 +18,11 @@ import com.pbst.pibsty.size.Pixels;
 
 public class ThrowableObj extends GameObject
 {
-	public ThrowableObj(Pixels x, Pixels y, Pixels width, Pixels height, Material material, World world, Texture texture, String bodyName, ArrayList<GameObject> gameObjects, ArrayList<Sprite> spriteList)
+	public ThrowableObj(Pixels x, Pixels y, Material material, World world, Texture texture, String bodyName, ArrayList<GameObject> gameObjects, ArrayList<Sprite> spriteList)
 	{
 		BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("GDSPhysicsBodies"));
+		
+		
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
@@ -30,7 +32,7 @@ public class ThrowableObj extends GameObject
 		FixtureDef fd = material.toFixtureDef();
 		
 		_body = world.createBody(bodyDef);
-		bodyLoader.attachFixture(_body, bodyName, fd, 1);
+		bodyLoader.attachFixture(_body, bodyName, fd, new Meters(new Pixels(texture.getWidth())).value());
 		
 		_sprite = new Sprite(texture);
 		_sprite.setPosition(x.value(), y.value());
