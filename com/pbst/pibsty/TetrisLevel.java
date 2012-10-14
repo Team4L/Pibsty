@@ -55,9 +55,13 @@ public class TetrisLevel implements IScreen{
 		createSprite(50, 50+89, 100, 100, R.Textures.firingArea);	// Firing Area
 		container = new Container(new Pixels(650-128),new Pixels(100), spriteList_, world_);
 		
-		createGameObject(new Pixels(650-148), new Pixels(65), new Pixels(16), new Pixels(256), R.Textures.containerEdge, BodyType.StaticBody, false, "containerEdge");	// container Left Edge
-		createGameObject(new Pixels(650+128), new Pixels(128+89), new Pixels(16), new Pixels(256), R.Textures.containerEdge, BodyType.StaticBody, false, "containerEdge");	// container Right Edge
-		createGameObject(new Pixels(400), new Pixels(45), new Pixels(800), new Pixels(89), R.Textures.ground, BodyType.StaticBody, false, "ground");				// Ground
+		//createGameObject(new Pixels(650-148), new Pixels(65), new Pixels(16), new Pixels(256), R.Textures.containerEdge, BodyType.StaticBody, false, "containerEdge");	// container Left Edge
+		//createGameObject(new Pixels(650+128), new Pixels(128+89), new Pixels(16), new Pixels(256), R.Textures.containerEdge, BodyType.StaticBody, false, "containerEdge");	// container Right Edge
+		//createGameObject(new Pixels(400), new Pixels(45), new Pixels(800), new Pixels(89), R.Textures.ground, BodyType.StaticBody, false, "ground");				// Ground
+		
+		createGameObject(new Pixels(650-148), new Pixels(65), R.Textures.containerWallS, BodyType.StaticBody, false, "containerWallS");	// container Left Edge
+		createGameObject(new Pixels(650+128), new Pixels(128+89), R.Textures.containerWallL, BodyType.StaticBody, false, "containerWallL");	// container Right Edge
+		createGameObject(new Pixels(400), new Pixels(75/2F), R.Textures.newGround, BodyType.StaticBody, false, "newGround");				// Ground
 		
 		//ThrowableObj box = new ThrowableObj(new Pixels(700), new Pixels(400), new Pixels(32), new Pixels(32), R.Materials.block, world_, R.Textures.pepper, "pepper", gameObjects_, spriteList_);
 		//ThrowableObj moon = new ThrowableObj(new Pixels(100), new Pixels(400), new Pixels(85), new Pixels(92), R.Materials.block, world_, R.Textures.thing, "thing", gameObjects_, spriteList_);
@@ -82,7 +86,7 @@ public class TetrisLevel implements IScreen{
 		{
 			container.Update();
 		}
-		//else if (currentFrame && lastFrame)
+		//else if (currentFrame && lastFrame) this isn't working!
 		{
 			TakePlayerTurn();
 		}	
@@ -183,15 +187,15 @@ public class TetrisLevel implements IScreen{
  * This methods is a quick fix - do not forget to refactor everything beneath here into something properly useable.
 *****************************************/
 	
-	public GameObject createGameObject(Pixels x, Pixels y, Pixels width, Pixels height, Texture tex, BodyType type, Boolean isSensor, String bodyName)
+	//public GameObject createGameObject(Pixels x, Pixels y, Pixels width, Pixels height, Texture tex, BodyType type, Boolean isSensor, String bodyName)
+	public GameObject createGameObject(Pixels x, Pixels y, Texture tex, BodyType type, Boolean isSensor, String bodyName)
 	{
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(new Meters(width).value()/2F, new Meters(height).value()/2F);
-		//BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("GDSPhysicsBodies"));
+		//shape.setAsBox(new Meters(width).value()/2F, new Meters(height).value()/2F);
+		BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("GDSPhysicsFixtures"));
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = type;
-		//bodyDef.position.set(new Meters(x).value(), new Meters(y).value());
 		bodyDef.position.set(new Meters(x).value(), new Meters(y).value());
 		bodyDef.fixedRotation = false;
 		
@@ -200,10 +204,11 @@ public class TetrisLevel implements IScreen{
 		fd.shape = shape;
 
 		Body body = world_.createBody(bodyDef);
+		bodyLoader.attachFixture(body, bodyName, fd, new Meters(new Pixels(tex.getWidth())).value());
 		//bodyLoader.attachFixture(body, bodyName, fd, 1);
-		body.createFixture(fd);
+		//body.createFixture(fd);
 		
-		GameObject gameObject = new GameObject( createSprite(x.value(), y.value(), width.value(), height.value(),  tex), body);
+		GameObject gameObject = new GameObject(createSprite(x.value(), y.value(), tex.getWidth(), tex.getHeight(),  tex), body);
 		gameObjects_.add(gameObject);
 		gameObject.isDeletable = false;
 		

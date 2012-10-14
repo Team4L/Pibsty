@@ -20,9 +20,7 @@ public class ThrowableObj extends GameObject
 {
 	public ThrowableObj(Pixels x, Pixels y, Material material, World world, Texture texture, String bodyName, ArrayList<GameObject> gameObjects, ArrayList<Sprite> spriteList)
 	{
-		BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("GDSPhysicsBodies"));
-		
-		
+		BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("GDSPhysicsFixtures"));
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.DynamicBody;
