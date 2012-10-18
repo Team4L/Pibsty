@@ -33,12 +33,25 @@ public final class R
 		public final Texture ground = new Texture(Gdx.files.internal("ground.png"));
 		public final Texture containerEdge = new Texture(Gdx.files.internal("containerEdge.png"));
 		public final Texture firingArea = new Texture(Gdx.files.internal("firingarea.png"));
+		
+		// new test objects
+		public final Texture circle = new Texture(Gdx.files.internal("circle75x75.png"));
+		public final Texture square = new Texture(Gdx.files.internal("square75x75.png"));
+		public final Texture pentagon = new Texture(Gdx.files.internal("pentagon75x75.png"));
+		public final Texture heart = new Texture(Gdx.files.internal("heart75x75.png"));
+		public final Texture tick = new Texture(Gdx.files.internal("tick75x75.png"));
+		
+		// new static objects
+		public final Texture containerWallS = new Texture(Gdx.files.internal("containerWallS33x88.png"));
+		public final Texture containerWallM = new Texture(Gdx.files.internal("containerWallM33x194.png"));
+		public final Texture containerWallL = new Texture(Gdx.files.internal("containerWallL33x300.png"));
+		public final Texture newGround = new Texture(Gdx.files.internal("ground800x70.png"));
 	}
 	
 	//	A set of physics materials for easy access to properties such as friction etc
 	public final class _Materials
 	{
-		public final Material block = new Material(0.5F, 0.3F, 0.2F);
+		public final Material block = new Material(10F, 0.3F, 0.2F);
 	}
 	
 	//	NB: There can only be 16 filter categories due to Box2D's data representation
