@@ -19,7 +19,7 @@ public class PibstyMain implements ApplicationListener {
 		resourceManager.init();
 		
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false,  800 , 480 );
+		camera.setToOrtho(false,  480 , 800 );
 		
 		gameScreen = new TetrisLevel(camera);
 	}

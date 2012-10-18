@@ -18,9 +18,7 @@ import com.pbst.pibsty.size.Pixels;
 public class LineSensor extends GameObject
 {
 	public int num;
-	public ArrayList<GameObject> collisions;
-	public Boolean isEmpty = true;
-	public int touching = 0;
+	public GameObject touchingObject;
 	private World world_;
 	private Pixels x_,y_;
 	
@@ -28,9 +26,8 @@ public class LineSensor extends GameObject
 	{
 		x_ = x;
 		y_= y;
-		System.out.println("x: " + x.value() + " y: " + y.value() + " num:" + num);
+		touchingObject = null;
 		num = num_;
-		collisions = new ArrayList<GameObject>();
 		world_ = world;
 		PolygonShape shape = new PolygonShape();
 		shape.setAsBox(new Meters(new Pixels(4)).value()/2F , new Meters(new Pixels(4)).value()/2F);
@@ -57,63 +54,36 @@ public class LineSensor extends GameObject
 		initFixtureData();
 	}
 	
-	public void destroyTouching()
-	{
-			for (GameObject g : collisions)
-			{
-				if (!(g instanceof LineSensor))
-				{
-					if (g.isAlive){
-						System.out.println("Sensor Delete");
-						world_.destroyBody(g._body);
-						TetrisLevel.gameObjects_.remove(g);
-						TetrisLevel.spriteList_.remove(g._sprite);
-						g.destroy();
-					}
-				}
-			}
-			collisions.clear();
-			isEmpty = true;
-			touching = 0;
-			
-			TetrisLevel.spriteList_.remove(_sprite);
-			_sprite = new Sprite(R.Textures.sensor,4, 4);
-			_sprite.setPosition(x_.value() - 2F, y_.value() - 2F);
-			TetrisLevel.spriteList_.add(_sprite);
-	}
-	
 	@Override
 	public void beginCollision(GameObject collider)
 	{
-		collisions.add(collider);
-		isEmpty = false;
-		
-		
-		if (touching == 0)
-		{
-			TetrisLevel.spriteList_.remove(_sprite);
-			_sprite = new Sprite(R.Textures.smallBox,4, 4);
-			_sprite.setPosition(x_.value() - 2F, y_.value() - 2F);
-			TetrisLevel.spriteList_.add(_sprite);
-		}
-		touching++;
+		touchingObject = collider;
+		setVisuallyTouched();
 	}
 	
 	@Override
 	public void endCollision(GameObject collider) {
-		collisions.remove(collider);
-		touching--;
-		
-		if (touching == 0)
-		{
-			TetrisLevel.spriteList_.remove(_sprite);
-			_sprite = new Sprite(R.Textures.sensor,4, 4);
-			_sprite.setPosition(x_.value() - 2F, y_.value() - 2F);
-			TetrisLevel.spriteList_.add(_sprite);
-		}
+		touchingObject = null;
+		setVisuallyEmpty();
 	}
 	
 	@Override
 	public void destroy() {
+	}
+	
+	public void setVisuallyTouched()
+	{
+		TetrisLevel.spriteList_.remove(_sprite);
+		_sprite = new Sprite(R.Textures.smallBox,4, 4);
+		_sprite.setPosition(x_.value() - 2F, y_.value() - 2F);
+		TetrisLevel.spriteList_.add(_sprite);
+	}
+	
+	public void setVisuallyEmpty()
+	{
+		TetrisLevel.spriteList_.remove(_sprite);
+		_sprite = new Sprite(R.Textures.sensor,4, 4);
+		_sprite.setPosition(x_.value() - 2F, y_.value() - 2F);
+		TetrisLevel.spriteList_.add(_sprite);
 	}
 }
