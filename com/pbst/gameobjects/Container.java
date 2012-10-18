@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.pbst.pibsty.R;
 import com.pbst.pibsty.TetrisLevel;
 import com.pbst.pibsty.size.Pixels;
@@ -76,10 +77,13 @@ public class Container extends GameObject
 		for (GameObject g: destroyableObjects)
 		{
 			// destroy each gameobject
-			TetrisLevel.gameObjects_.remove(g);
-			TetrisLevel.spriteList_.remove(g._sprite);
-			g.destroy();
-			world_.destroyBody(g._body);
+			if (g._body.getType() == BodyType.DynamicBody)
+			{
+				world_.destroyBody(g._body);
+				TetrisLevel.gameObjects_.remove(g);
+				TetrisLevel.spriteList_.remove(g._sprite);
+				g.destroy();
+			}
 		}
 		
 		destroyableObjects.clear();
