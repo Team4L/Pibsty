@@ -47,7 +47,7 @@ public class LineSensor extends GameObject
 		_body = world.createBody(bodyDef);
 		_body.createFixture(fd);
 		
-		_sprite = new Sprite(R.Textures.sensor,4, 4);
+		_sprite = new Sprite(R.Textures.sensor, 4, 4);
 		_sprite.setPosition(x.value() - 2F, y.value() - 2F);
 		
 		TetrisLevel.spriteList_.add(_sprite);

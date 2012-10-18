@@ -11,6 +11,7 @@ import com.pbst.pibsty.size.Pixels;
 
 public class Container extends GameObject
 {
+	private static final float percentageFillNeeded = 50.0F;
 	private static final int numRows = 12;
 	private static final int numCols = 12;
 	World world_;
@@ -44,7 +45,7 @@ public class Container extends GameObject
 			}
 			
 			//	If there are enough collisions in this row (as a percentage of the number of sensors
-			if (collisions >= (numCols * (100/100F)))
+			if (collisions >= (numCols * (percentageFillNeeded/100F)))
 			{
 				
 				//	Add each object from the sensors to the destroyable list
@@ -76,6 +77,9 @@ public class Container extends GameObject
 		//	Delete destroyable objects list
 		for (GameObject g: destroyableObjects)
 		{
+			if (g == null) continue;
+			if (!g.isAlive) continue;
+			if (g._body == null) continue;
 			// destroy each gameobject
 			if (g._body.getType() == BodyType.DynamicBody)
 			{

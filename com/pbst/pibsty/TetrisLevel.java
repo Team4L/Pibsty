@@ -53,7 +53,7 @@ public class TetrisLevel implements IScreen{
 	private void InitialiseLevelObjects()
 	{
 		createSprite(165, 50+89, 100, 100, R.Textures.container);	// container
-		container = new Container(new Pixels(45),new Pixels(85), spriteList_, world_);
+		container = new Container(new Pixels(45),new Pixels(105), spriteList_, world_);
 		createGameObject(new Pixels(0+(33/2F)), new Pixels(220), R.Textures.containerWallL, BodyType.StaticBody, false, "containerWallL");	// container Left Edge
 		createGameObject(new Pixels(480-(33/2F)), new Pixels(220), R.Textures.containerWallL, BodyType.StaticBody, false, "containerWallL");	// container Right Edge
 		createGameObject(new Pixels(0+(33/2F)), new Pixels(380), R.Textures.containerWallM, BodyType.StaticBody, false, "containerWallM");	// container Right Edge
@@ -103,39 +103,41 @@ public class TetrisLevel implements IScreen{
 	
 	void TakePlayerTurn()
 	{
-		// Create and throw a new block when swiped
-		if (throwGesture_.wasPerformed())
+		// Spawn a new item at the top of the screen
+		
+		float random = MathUtils.random(0.0F, 100.0F);
+		GameObject g;
+		
+		final float x = 240.0F;
+		final float y = 850.0F;
+		
+		if (random < 20)
 		{
-			GameObject g;
-			
-			if (Gdx.input.isKeyPressed(Input.Keys.A))
-			{
-				ThrowableObj newItem = new ThrowableObj( new Pixels(throwGesture_.getDownPosition().x), new Pixels(throwGesture_.getDownPosition().y), R.Materials.block, world_,R.Textures.circle, "circle", gameObjects_, spriteList_);
-				g = newItem;
-			}
-			else if (Gdx.input.isKeyPressed(Input.Keys.S))
-			{
-				ThrowableObj newItem = new ThrowableObj( new Pixels(throwGesture_.getDownPosition().x), new Pixels(throwGesture_.getDownPosition().y), R.Materials.block, world_,R.Textures.heart, "heart", gameObjects_, spriteList_);
-				g = newItem;
-			}
-			else if (Gdx.input.isKeyPressed(Input.Keys.D))
-			{
-				ThrowableObj newItem = new ThrowableObj( new Pixels(throwGesture_.getDownPosition().x), new Pixels(throwGesture_.getDownPosition().y), R.Materials.block, world_,R.Textures.tick, "tick", gameObjects_, spriteList_);
-				g = newItem;
-			}
-			else if (Gdx.input.isKeyPressed(Input.Keys.F))
-			{
-				ThrowableObj newItem = new ThrowableObj( new Pixels(throwGesture_.getDownPosition().x), new Pixels(throwGesture_.getDownPosition().y), R.Materials.block, world_,R.Textures.pentagon, "pentagon", gameObjects_, spriteList_);
-				g = newItem;
-			}
-			else
-			{
-				ThrowableObj moon = new ThrowableObj(new Pixels(throwGesture_.getDownPosition().x), new Pixels(throwGesture_.getDownPosition().y), R.Materials.block, world_, R.Textures.square, "square",gameObjects_, spriteList_);
-				g = moon;
-			}
-			
-			g._body.applyForceToCenter( throwGesture_.getThrow(new Meters(10).value()) );
+			ThrowableObj newItem = new ThrowableObj( new Pixels(x), new Pixels(y), R.Materials.block, world_,R.Textures.circle, "circle", gameObjects_, spriteList_);
+			g = newItem;
 		}
+		else if (random < 40)
+		{
+			ThrowableObj newItem = new ThrowableObj( new Pixels(x), new Pixels(y), R.Materials.block, world_,R.Textures.heart, "heart", gameObjects_, spriteList_);
+			g = newItem;
+		}
+		else if (random < 60)
+		{
+			ThrowableObj newItem = new ThrowableObj( new Pixels(x), new Pixels(y), R.Materials.block, world_,R.Textures.tick, "tick", gameObjects_, spriteList_);
+			g = newItem;
+		}
+		else if (random < 80)
+		{
+			ThrowableObj newItem = new ThrowableObj( new Pixels(x), new Pixels(y), R.Materials.block, world_,R.Textures.pentagon, "pentagon", gameObjects_, spriteList_);
+			g = newItem;
+		}
+		else
+		{
+			ThrowableObj moon = new ThrowableObj(new Pixels(x), new Pixels(y), R.Materials.block, world_, R.Textures.square, "square",gameObjects_, spriteList_);
+			g = moon;
+		}
+		
+		g._body.applyForceToCenter( throwGesture_.getThrow(new Meters(10).value()) );
 	}
 	
 	Boolean IsLevelAsleep()
