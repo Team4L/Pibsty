@@ -19,6 +19,7 @@ public class CollisionListener implements ContactListener {
 		GameObject gA = (GameObject)contact.getFixtureA().getUserData();
 		GameObject gB = (GameObject)contact.getFixtureB().getUserData();
 		
+		if (gA == null || gB == null) return;
 		gA.beginCollision(gB);
 		gB.beginCollision(gA);
 	}
@@ -29,6 +30,7 @@ public class CollisionListener implements ContactListener {
 		GameObject gA = (GameObject)contact.getFixtureA().getUserData();
 		GameObject gB = (GameObject)contact.getFixtureB().getUserData();
 		
+		if (gA == null || gB == null) return;
 		gA.endCollision(gB);
 		gB.endCollision(gA);
 	}

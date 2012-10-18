@@ -11,7 +11,7 @@ import com.pbst.pibsty.size.Pixels;
 
 public class Container extends GameObject
 {
-	private static final float percentageFillNeeded = 50.0F;
+	private static final float percentageFillNeeded = 35.0F;
 	private static final int numRows = 12;
 	private static final int numCols = 12;
 	World world_;

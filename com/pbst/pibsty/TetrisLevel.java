@@ -17,6 +17,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -34,6 +35,7 @@ public class TetrisLevel implements IScreen{
 	private Container container;
 	private Text scoreText;
 	public static int score = 0;
+	private Body touchBody;
 
 	TetrisLevel(OrthographicCamera camera)
 	{
@@ -54,6 +56,8 @@ public class TetrisLevel implements IScreen{
 	{
 		createGameObject(new Pixels(240), new Pixels(400), R.Textures.backgroundAndContainer, BodyType.StaticBody, false, "backgroundAndContainer");	// container object
 		container = new Container(new Pixels(45),new Pixels(105), spriteList_, world_);
+		
+		touchBody = createKinematic(new Pixels(240), new Pixels(400));
 	}
 	
 	public Boolean thrown = false;
@@ -92,7 +96,18 @@ public class TetrisLevel implements IScreen{
 			TakePlayerTurn();
 		}
 		
+		if (Gdx.input.isTouched())
+		{
+			touchBody.setActive(true);
+			touchBody.setTransform(new Vector2( new Meters(new Pixels(Gdx.input.getX())).value(), new Meters(new Pixels(800-Gdx.input.getY())).value()), 0);
+		}
+		else
+		{
+			touchBody.setActive(false);
+		}
+		
 		lastFrame = currentFrame;
+		scoreText.text = "Score: " + score;
 	}
 	
 	void TakePlayerTurn()
@@ -122,7 +137,7 @@ public class TetrisLevel implements IScreen{
 		}
 		else 
 		{
-			ThrowableObj newItem = new ThrowableObj(new Pixels(x), new Pixels(y), R.Materials.block, world_, R.Textures.box, "box",gameObjects_, spriteList_);
+			ThrowableObj newItem = new ThrowableObj(new Pixels(x), new Pixels(y), R.Materials.block, world_, R.Textures.box, "box", gameObjects_, spriteList_);
 			g = newItem;
 		}
 	}
@@ -216,6 +231,26 @@ public class TetrisLevel implements IScreen{
 		gameObject._body.setAwake(false);
 		
 		return gameObject;
+	}
+	
+	public Body createKinematic(Pixels x, Pixels y)
+	{
+		CircleShape shape = new CircleShape();
+		shape.setRadius(new Meters(new Pixels(25)).value() );
+		
+		BodyDef bodyDef = new BodyDef();
+		bodyDef.type = BodyType.StaticBody;
+		bodyDef.position.set(new Meters(x).value(), new Meters(y).value());
+		bodyDef.fixedRotation = false;
+		
+		FixtureDef fd = R.Materials.block.toFixtureDef();
+		fd.shape = shape;
+		fd.density = 50.0F;
+
+		Body body = world_.createBody(bodyDef);
+		body.createFixture(fd);
+		
+		return body;
 	}
 	
 	private Sprite createSprite(float x, float y, float width, float height, Texture tex)
