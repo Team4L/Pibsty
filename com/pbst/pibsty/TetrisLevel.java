@@ -2,6 +2,8 @@ package com.pbst.pibsty;
 
 import java.util.ArrayList;
 
+import aurelienribon.bodyeditor.BodyEditorLoader;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
@@ -21,7 +23,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.pbst.gameobjects.Container;
 import com.pbst.gameobjects.GameObject;
-import com.pbst.gameobjects.ThrowableMoon;
 import com.pbst.gameobjects.ThrowableObj;
 import com.pbst.pibsty.size.Meters;
 import com.pbst.pibsty.size.Pixels;
@@ -29,20 +30,14 @@ import com.pbst.pibsty.size.Pixels;
 public class TetrisLevel implements IScreen{
 	
 	private static final Vector2 GRAVITY = new Vector2(0,-9.81F);
-	private static final float M = 8F / 800F;
-	private static final float PX = 800F / 8F;
 	
-	public static int score = 0;
-
 	private Container container;
-//PUBLIC:
-	
 	private Text scoreText;
+	public static int score = 0;
 
 	TetrisLevel(OrthographicCamera camera)
 	{
 		camera_ = camera;
-		scoreText = new Text(300, 400, "Score: NOT_SET" , R.Textures.text);
 		
 		spriteList_ = new ArrayList<Sprite>();
 		gameObjects_ = new ArrayList<GameObject>();
@@ -50,36 +45,59 @@ public class TetrisLevel implements IScreen{
 		world_.setContactListener(new CollisionListener());
 		spriteBatch_ = new SpriteBatch();
 		throwGesture_ = new ThrowGesture(camera_, new Boundary(new Vector2(100,100), 150));
+		scoreText = new Text(300, 400, "Score: NOT_SET" , R.Textures.text);
 		
-		//	Create the different game objects needed
-		createSprite(50, 50+89, 100, 100, R.Textures.firingArea);	// Firing Area
-		container = new Container(new Pixels(650-128),new Pixels(100), spriteList_, world_);
-		
-		createGameObject(new Pixels(650-148), new Pixels(65), new Pixels(16), new Pixels(256), R.Textures.containerEdge, BodyType.StaticBody, false);	// container Left Edge
-		createGameObject(new Pixels(650+128), new Pixels(128+89), new Pixels(16), new Pixels(256), R.Textures.containerEdge, BodyType.StaticBody, false);	// container Right Edge
-		createGameObject(new Pixels(400), new Pixels(89/2F), new Pixels(800), new Pixels(89), R.Textures.ground, BodyType.StaticBody, false);				// Ground
-		ThrowableObj box = new ThrowableObj(new Pixels(400), new Pixels(400), new Pixels(32), new Pixels(32), R.Materials.block, world_, R.Textures.smallBox);
-		gameObjects_.add(box);
-		spriteList_.add(box._sprite);
-		
-		ThrowableMoon moon = new ThrowableMoon(new Pixels(300), new Pixels(400), new Pixels(85), new Pixels(92), R.Materials.block, world_, R.Textures.moon);
-		gameObjects_.add(moon);
-		spriteList_.add(moon._sprite);
-		
+		InitialiseLevelObjects();
 	}
 
+	private void InitialiseLevelObjects()
+	{
+		createSprite(50, 50+89, 100, 100, R.Textures.firingArea);	// Firing Area
+		container = new Container(new Pixels(650-128),new Pixels(85), spriteList_, world_);
+		
+		//createGameObject(new Pixels(650-148), new Pixels(65), new Pixels(16), new Pixels(256), R.Textures.containerEdge, BodyType.StaticBody, false, "containerEdge");	// container Left Edge
+		//createGameObject(new Pixels(650+128), new Pixels(128+89), new Pixels(16), new Pixels(256), R.Textures.containerEdge, BodyType.StaticBody, false, "containerEdge");	// container Right Edge
+		//createGameObject(new Pixels(400), new Pixels(45), new Pixels(800), new Pixels(89), R.Textures.ground, BodyType.StaticBody, false, "ground");				// Ground
+		
+		createGameObject(new Pixels(480+(33/2F)), new Pixels(90), R.Textures.containerWallS, BodyType.StaticBody, false, "containerWallS");	// container Left Edge
+		createGameObject(new Pixels(800-(33/2F)), new Pixels(180), R.Textures.containerWallL, BodyType.StaticBody, false, "containerWallL");	// container Right Edge
+		createGameObject(new Pixels(400), new Pixels(75/2F), R.Textures.newGround, BodyType.StaticBody, false, "newGround");				// Ground
+		
+		//ThrowableObj box = new ThrowableObj(new Pixels(700), new Pixels(400), new Pixels(32), new Pixels(32), R.Materials.block, world_, R.Textures.pepper, "pepper", gameObjects_, spriteList_);
+		//ThrowableObj moon = new ThrowableObj(new Pixels(100), new Pixels(400), new Pixels(85), new Pixels(92), R.Materials.block, world_, R.Textures.thing, "thing", gameObjects_, spriteList_);
+	}
+	
 	public float time = 0;
 	public float startTime = 0;
 	public Boolean thrown = false;
+	public Boolean lastFrame = false;
+	
 	@Override
 	public void Update(float dt)
 	{
+		// Start Physics
 		time += dt;
 		world_.step(dt, 10, 10);
 		world_.clearForces();
+	
+		Boolean currentFrame = IsLevelAsleep();
 		
-		//	Create and throw a new block when swiped
-		if (throwGesture_.wasPerformed() && !thrown)
+		if (currentFrame && !lastFrame)
+		{
+			container.Update();
+		}
+		//else if (currentFrame && lastFrame) this isn't working!
+		{
+			TakePlayerTurn();
+		}	
+		
+		lastFrame = currentFrame;
+	}
+	
+	void TakePlayerTurn()
+	{
+		// Create and throw a new block when swiped
+		if (throwGesture_.wasPerformed())
 		{
 			startTime = time;
 			thrown = true;
@@ -88,90 +106,58 @@ public class TetrisLevel implements IScreen{
 			
 			if (Gdx.input.isKeyPressed(Input.Keys.A))
 			{
-				ThrowableObj newItem = new ThrowableObj( new Pixels(throwGesture_.getDownPosition().x), new Pixels(throwGesture_.getDownPosition().y), new Pixels(32), new Pixels(32),R.Materials.block, world_, R.Textures.smallBox);
-				gameObjects_.add(newItem);
-				spriteList_.add(newItem._sprite);
+				ThrowableObj newItem = new ThrowableObj( new Pixels(throwGesture_.getDownPosition().x), new Pixels(throwGesture_.getDownPosition().y), R.Materials.block, world_,R.Textures.circle, "circle", gameObjects_, spriteList_);
+				g = newItem;
+			}
+			else if (Gdx.input.isKeyPressed(Input.Keys.S))
+			{
+				ThrowableObj newItem = new ThrowableObj( new Pixels(throwGesture_.getDownPosition().x), new Pixels(throwGesture_.getDownPosition().y), R.Materials.block, world_,R.Textures.heart, "heart", gameObjects_, spriteList_);
+				g = newItem;
+			}
+			else if (Gdx.input.isKeyPressed(Input.Keys.D))
+			{
+				ThrowableObj newItem = new ThrowableObj( new Pixels(throwGesture_.getDownPosition().x), new Pixels(throwGesture_.getDownPosition().y), R.Materials.block, world_,R.Textures.tick, "tick", gameObjects_, spriteList_);
+				g = newItem;
+			}
+			else if (Gdx.input.isKeyPressed(Input.Keys.F))
+			{
+				ThrowableObj newItem = new ThrowableObj( new Pixels(throwGesture_.getDownPosition().x), new Pixels(throwGesture_.getDownPosition().y), R.Materials.block, world_,R.Textures.pentagon, "pentagon", gameObjects_, spriteList_);
 				g = newItem;
 			}
 			else
 			{
-				ThrowableMoon moon = new ThrowableMoon(new Pixels(throwGesture_.getDownPosition().x), new Pixels(throwGesture_.getDownPosition().y), new Pixels(85), new Pixels(92), R.Materials.block, world_, R.Textures.moon);
-				gameObjects_.add(moon);
-				spriteList_.add(moon._sprite);
-				g= moon;
+				ThrowableObj moon = new ThrowableObj(new Pixels(throwGesture_.getDownPosition().x), new Pixels(throwGesture_.getDownPosition().y), R.Materials.block, world_, R.Textures.square, "square",gameObjects_, spriteList_);
+				g = moon;
 			}
 			
-			g._body.applyForce( throwGesture_.getThrow(10*M), g._body.getWorldCenter() );
+			g._body.applyForceToCenter( throwGesture_.getThrow(new Meters(10).value()) );
 		}
-		
-
-		//	Update all sprites to their new position
-		Boolean allsleep = true;
-		ArrayList<GameObject> destroyList = new ArrayList<GameObject>();
-		ArrayList<GameObject> fastDestroyList = new ArrayList<GameObject>();
-		for (GameObject g : gameObjects_)
-		{
-			g._sprite.setPosition((g._body.getPosition().x * PX) - (g._sprite.getWidth()/2F), (g._body.getPosition().y * PX) - (g._sprite.getHeight()/2F));
-			g._sprite.setRotation(MathUtils.radiansToDegrees * g._body.getAngle());
-			
-			
-			if ((new Pixels( new Meters(g._body.getPosition().x)).value() > 800) && (g.isDeletable))
-			{
-				fastDestroyList.add(g);
-			}
-			
-			if (!g._body.isAwake())
-			{
-				if ((new Pixels( new Meters(g._body.getPosition().x)).value() < 500) && (g.isDeletable))
-				{
-					destroyList.add(g);
-				}
-			}
-			else
-			{
-				if (g.isDeletable)
-				{
-					allsleep = false;
-				}
-			}
-		}
-		if (allsleep)
-		{
-			for (GameObject g : destroyList)
-			{
-				System.out.println("Boundary Delete");
-				gameObjects_.remove(g);
-				spriteList_.remove(g._sprite);
-				world_.destroyBody(g._body);
-			}
-		}
-		
-		for (GameObject g : fastDestroyList)
-		{
-			System.out.println("Overshot Boundary Delete");
-			gameObjects_.remove(g);
-			spriteList_.remove(g._sprite);
-			world_.destroyBody(g._body);
-		}
-			
-			
-		if ((thrown && (time - startTime > 1F)) && (allsleep))
-		{
-			thrown = false;
-			startTime = time;
-			
-			container.Update();
-		}
-		destroyList.clear();
-		
-		scoreText.text = "SCORE: " + score;
 	}
-
+	
+	Boolean IsLevelAsleep()
+	{
+		for(GameObject g: gameObjects_)
+		{
+			if(!g._body.isAwake())
+			{
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
 	@Override
 	public void Render(float dt)
 	{
 		Gdx.gl.glClearColor(0.3F,0.8F,1F,1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		
+		for (GameObject g: gameObjects_)
+		{
+			g._sprite.setPosition(new Pixels(new Meters(g._body.getPosition().x)).value() - g._sprite.getWidth()/2F, new Pixels(new Meters(g._body.getPosition().y)).value() - g._sprite.getHeight()/2F);
+			g._sprite.setRotation(MathUtils.radiansToDegrees * (g._body.getAngle()));
+		}
 		
 		//	Render all sprite objects
 		spriteBatch_.setProjectionMatrix(camera_.combined);
@@ -181,7 +167,7 @@ public class TetrisLevel implements IScreen{
 			s.draw(spriteBatch_);
 		}
 		
-		scoreText.draw(spriteBatch_);
+		scoreText.draw(spriteBatch_); // Fix it
 		spriteBatch_.end();
 	}
 
@@ -195,16 +181,18 @@ public class TetrisLevel implements IScreen{
 	private World world_;						//	Physics world for Box2D
 	private OrthographicCamera camera_;
 	private SpriteBatch spriteBatch_;
-	
 	private ThrowGesture throwGesture_;			//	Tests for when a swipe is registered for throwing blocks
 	
 /******************************************
  * This methods is a quick fix - do not forget to refactor everything beneath here into something properly useable.
 *****************************************/
-	private GameObject createGameObject(Pixels x, Pixels y, Pixels width, Pixels height, Texture tex, BodyType type, Boolean isSensor)
+	
+	//public GameObject createGameObject(Pixels x, Pixels y, Pixels width, Pixels height, Texture tex, BodyType type, Boolean isSensor, String bodyName)
+	public GameObject createGameObject(Pixels x, Pixels y, Texture tex, BodyType type, Boolean isSensor, String bodyName)
 	{
 		PolygonShape shape = new PolygonShape();
-		shape.setAsBox( new Meters(width).value()/2F, new Meters(height).value()/2F);
+		//shape.setAsBox(new Meters(width).value()/2F, new Meters(height).value()/2F);
+		BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("GDSPhysicsFixtures"));
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = type;
@@ -216,9 +204,11 @@ public class TetrisLevel implements IScreen{
 		fd.shape = shape;
 
 		Body body = world_.createBody(bodyDef);
-		body.createFixture(fd);
+		bodyLoader.attachFixture(body, bodyName, fd, new Meters(new Pixels(tex.getWidth())).value());
+		//bodyLoader.attachFixture(body, bodyName, fd, 1);
+		//body.createFixture(fd);
 		
-		GameObject gameObject = new GameObject( createSprite(x.value(), y.value(), width.value(), height.value(),  tex), body);
+		GameObject gameObject = new GameObject(createSprite(x.value(), y.value(), tex.getWidth(), tex.getHeight(),  tex), body);
 		gameObjects_.add(gameObject);
 		gameObject.isDeletable = false;
 		
