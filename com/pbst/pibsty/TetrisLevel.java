@@ -45,22 +45,26 @@ public class TetrisLevel implements IScreen{
 		world_.setContactListener(new CollisionListener());
 		spriteBatch_ = new SpriteBatch();
 		throwGesture_ = new ThrowGesture(camera_, new Boundary(new Vector2(100,100), 150));
-		scoreText = new Text(300, 400, "Score: NOT_SET" , R.Textures.text);
+		scoreText = new Text(150, 800, "Score: NOT_SET" , R.Textures.text);
 		
 		InitialiseLevelObjects();
 	}
 
 	private void InitialiseLevelObjects()
 	{
-		createSprite(50, 50+89, 100, 100, R.Textures.firingArea);	// Firing Area
-		container = new Container(new Pixels(650-128),new Pixels(85), spriteList_, world_);
+		//createSprite(50, 50+89, 100, 100, R.Textures.firingArea);	// Firing Area
+		createSprite(165, 50+89, 100, 100, R.Textures.container);	// container
+		container = new Container(new Pixels(45),new Pixels(85), spriteList_, world_);
 		
 		//createGameObject(new Pixels(650-148), new Pixels(65), new Pixels(16), new Pixels(256), R.Textures.containerEdge, BodyType.StaticBody, false, "containerEdge");	// container Left Edge
 		//createGameObject(new Pixels(650+128), new Pixels(128+89), new Pixels(16), new Pixels(256), R.Textures.containerEdge, BodyType.StaticBody, false, "containerEdge");	// container Right Edge
 		//createGameObject(new Pixels(400), new Pixels(45), new Pixels(800), new Pixels(89), R.Textures.ground, BodyType.StaticBody, false, "ground");				// Ground
 		
-		createGameObject(new Pixels(480+(33/2F)), new Pixels(90), R.Textures.containerWallS, BodyType.StaticBody, false, "containerWallS");	// container Left Edge
-		createGameObject(new Pixels(800-(33/2F)), new Pixels(180), R.Textures.containerWallL, BodyType.StaticBody, false, "containerWallL");	// container Right Edge
+		createGameObject(new Pixels(0+(33/2F)), new Pixels(220), R.Textures.containerWallL, BodyType.StaticBody, false, "containerWallL");	// container Left Edge
+		createGameObject(new Pixels(480-(33/2F)), new Pixels(220), R.Textures.containerWallL, BodyType.StaticBody, false, "containerWallL");	// container Right Edge
+		createGameObject(new Pixels(0+(33/2F)), new Pixels(380), R.Textures.containerWallM, BodyType.StaticBody, false, "containerWallM");	// container Right Edge
+		createGameObject(new Pixels(480-(33/2F)), new Pixels(380), R.Textures.containerWallM, BodyType.StaticBody, false, "containerWallM");	// container Right Edge
+		
 		createGameObject(new Pixels(400), new Pixels(75/2F), R.Textures.newGround, BodyType.StaticBody, false, "newGround");				// Ground
 		
 		//ThrowableObj box = new ThrowableObj(new Pixels(700), new Pixels(400), new Pixels(32), new Pixels(32), R.Materials.block, world_, R.Textures.pepper, "pepper", gameObjects_, spriteList_);
@@ -71,6 +75,7 @@ public class TetrisLevel implements IScreen{
 	public float startTime = 0;
 	public Boolean thrown = false;
 	public Boolean lastFrame = false;
+	public int timer = 0;
 	
 	@Override
 	public void Update(float dt)
@@ -82,15 +87,17 @@ public class TetrisLevel implements IScreen{
 	
 		Boolean currentFrame = IsLevelAsleep();
 		
-		if (currentFrame && !lastFrame)
+		if (currentFrame && !lastFrame) 
 		{
 			container.Update();
 		}
-		//else if (currentFrame && lastFrame) this isn't working!
+		else if ((currentFrame && lastFrame) || (timer == 10)) 
 		{
 			TakePlayerTurn();
+			timer = 0;
 		}	
 		
+		timer++;
 		lastFrame = currentFrame;
 	}
 	

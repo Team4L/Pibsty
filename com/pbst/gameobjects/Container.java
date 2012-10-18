@@ -18,7 +18,7 @@ public class Container extends GameObject
 		{
 			for (int j = 0; j < b; ++j)
 			{
-				LineSensor sensor = new LineSensor( new Pixels(j*(256F/b) + x.value()), new Pixels(i*(256F/b) + y.value()), world, (i*b) + j);
+				LineSensor sensor = new LineSensor( new Pixels(j*(420F/b) + x.value()), new Pixels(i*(420F/b) + y.value()), world, (i*b) + j);
 				//slist.add(sensor._sprite);
 				sensors[i][j] = sensor;
 			}
@@ -41,7 +41,7 @@ public class Container extends GameObject
 				{
 						sensors[i][j].destroyTouching();
 				}
-				TetrisLevel.score += 1525;
+				TetrisLevel.score += 100;
 			}
 			else if (c > 0)
 			{
