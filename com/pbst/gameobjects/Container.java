@@ -4,22 +4,25 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.World;
+import com.pbst.pibsty.R;
 import com.pbst.pibsty.TetrisLevel;
 import com.pbst.pibsty.size.Pixels;
 
 public class Container extends GameObject
 {
-	private static final int b = 12;
-	LineSensor[][] sensors = new LineSensor[b][b];//	Grid resolution of the various sensors
+	private static final int numRows = 12;
+	private static final int numCols = 12;
+	World world_;
+	LineSensor[][] sensors = new LineSensor[numRows][numCols];//	Grid resolution of the various sensors
 	
 	public Container(Pixels x, Pixels y, ArrayList<Sprite> slist, World world)
 	{
-		for (int i = 0; i < b; ++i)
+		world_ = world;
+		for (int i = 0; i < numRows; ++i)
 		{
-			for (int j = 0; j < b; ++j)
+			for (int j = 0; j < numCols; ++j)
 			{
-				LineSensor sensor = new LineSensor( new Pixels(j*(420F/b) + x.value()), new Pixels(i*(420F/b) + y.value()), world, (i*b) + j);
-				//slist.add(sensor._sprite);
+				LineSensor sensor = new LineSensor( new Pixels(j*(420F/numCols) + x.value()), new Pixels(i*(420F/numRows) + y.value()), world, (i*numRows) + j);
 				sensors[i][j] = sensor;
 			}
 		}
@@ -27,27 +30,59 @@ public class Container extends GameObject
 	
 	public void Update()
 	{
-		for (int i = 0; i < b; ++i)
+		//	Create a list of destroyable objects - get them from each sensor in this row
+		ArrayList<GameObject> destroyableObjects = new ArrayList<GameObject>();
+		//	for each row
+		for (int i = 0; i < numRows; ++i)
 		{
-			int c = 0;
-			for (int j = 0; j < b; ++j)
+			int collisions = 0;	//	number of collisions in this row
+			//for each sensor in the row
+			for (int j = 0; j < numCols; ++j)
 			{
-				if (!sensors[i][j].isEmpty) c++;
+				if (sensors[i][j].touchingObject != null) collisions++;
 			}
-			if (c >= (b * (100/100F)))
+			
+			//	If there are enough collisions in this row (as a percentage of the number of sensors
+			if (collisions >= (numCols * (100/100F)))
 			{
-				System.out.println("(FULL) Row: " + i + " NumHit: " + c);
-				for (int j = 0; j < b; ++j)
+				
+				//	Add each object from the sensors to the destroyable list
+				for (int j = 0; j < numCols ; ++j)
 				{
-						sensors[i][j].destroyTouching();
+						destroyableObjects.add(sensors[i][j].touchingObject);
 				}
+				
 				TetrisLevel.score += 100;
 			}
-			else if (c > 0)
+		}
+		
+		//	Clear all sensors that have one of these objects touching them
+		for (int i = 0; i < numRows; i++)
+		{
+			for (int j = 0; j < numCols; ++j)
 			{
-				System.out.println("(NOT FULL) Row: " + i + " NumHit: " + c);
+				for (GameObject g: destroyableObjects)
+				{
+					if (sensors[i][j].touchingObject == g)
+					{
+						sensors[i][j].touchingObject = null;
+						sensors[i][j].setVisuallyEmpty();
+					}
+				}
 			}
 		}
+		
+		//	Delete destroyable objects list
+		for (GameObject g: destroyableObjects)
+		{
+			// destroy each gameobject
+			TetrisLevel.gameObjects_.remove(g);
+			TetrisLevel.spriteList_.remove(g._sprite);
+			g.destroy();
+			world_.destroyBody(g._body);
+		}
+		
+		destroyableObjects.clear();
 	}
 	
 	@Override
