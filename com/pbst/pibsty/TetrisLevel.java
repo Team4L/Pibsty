@@ -55,7 +55,7 @@ public class TetrisLevel implements IScreen{
 	private void InitialiseLevelObjects()
 	{
 		createGameObject(new Pixels(240), new Pixels(400), R.Textures.backgroundAndContainer, BodyType.StaticBody, false, "backgroundAndContainer");	// container object
-		container = new Container(new Pixels(45),new Pixels(105), spriteList_, world_);
+		container = new Container(new Pixels(68),new Pixels(115), spriteList_, world_);
 		
 		touchBody = createKinematic(new Pixels(240), new Pixels(400));
 	}
@@ -115,7 +115,6 @@ public class TetrisLevel implements IScreen{
 		// Spawn a new item at the top of the screen
 		
 		float random = MathUtils.random(0.0F, 100.0F);
-		GameObject g;
 		
 		final float x = 240.0F;
 		final float y = 850.0F;
@@ -123,22 +122,18 @@ public class TetrisLevel implements IScreen{
 		if (random < 25)
 		{
 			ThrowableObj newItem = new ThrowableObj( new Pixels(x), new Pixels(y), R.Materials.block, world_,R.Textures.wheel, "wheel", gameObjects_, spriteList_);
-			g = newItem;
 		}
 		else if (random < 50)
 		{
-			ThrowableObj newItem = new ThrowableObj( new Pixels(x), new Pixels(y), R.Materials.block, world_,R.Textures.sword, "sword", gameObjects_, spriteList_);
-			g = newItem;
+			ThrowableObj newItem = new ThrowableObj( new Pixels(x), new Pixels(y), R.Materials.block, world_,R.Textures.sword, "newSword", gameObjects_, spriteList_);
 		}
 		else if (random < 75)
 		{
-			ThrowableObj newItem = new ThrowableObj( new Pixels(x), new Pixels(y), R.Materials.block, world_,R.Textures.trolley, "trolley", gameObjects_, spriteList_);
-			g = newItem;
+			ThrowableObj newItem = new ThrowableObj( new Pixels(x), new Pixels(y), R.Materials.block, world_,R.Textures.trolley, "trolley_breakable_handle", "trolley_breakable_basket", "trolley_breakable_wheels", true, gameObjects_, spriteList_); 
 		}
 		else 
 		{
 			ThrowableObj newItem = new ThrowableObj(new Pixels(x), new Pixels(y), R.Materials.block, world_, R.Textures.box, "box", gameObjects_, spriteList_);
-			g = newItem;
 		}
 	}
 	

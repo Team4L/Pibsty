@@ -14,6 +14,8 @@ public class GameObject {
 	public Body _body;
 	public Boolean isAlive = true;
 	public Boolean isDeletable = true;
+	public Boolean isBreakable = false;
+	
 	public GameObject()
 	{
 	}

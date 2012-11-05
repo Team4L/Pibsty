@@ -3,6 +3,7 @@ package com.pbst.gameobjects;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.pbst.pibsty.R;
@@ -11,9 +12,9 @@ import com.pbst.pibsty.size.Pixels;
 
 public class Container extends GameObject
 {
-	private static final float percentageFillNeeded = 35.0F;
-	private static final int numRows = 12;
-	private static final int numCols = 12;
+	private static final float percentageFillNeeded = 60.0F;
+	private static final int numRows = 10;
+	private static final int numCols = 10;
 	World world_;
 	LineSensor[][] sensors = new LineSensor[numRows][numCols];//	Grid resolution of the various sensors
 	
@@ -24,7 +25,7 @@ public class Container extends GameObject
 		{
 			for (int j = 0; j < numCols; ++j)
 			{
-				LineSensor sensor = new LineSensor( new Pixels(j*(420F/numCols) + x.value()), new Pixels(i*(420F/numRows) + y.value()), world, (i*numRows) + j);
+				LineSensor sensor = new LineSensor( new Pixels(j*(375F/numCols) + x.value()), new Pixels(i*(440F/numRows) + y.value()), world, (i*numRows) + j);
 				sensors[i][j] = sensor;
 			}
 		}
@@ -41,7 +42,7 @@ public class Container extends GameObject
 			//for each sensor in the row
 			for (int j = 0; j < numCols; ++j)
 			{
-				if (sensors[i][j].touchingObject != null) collisions++;
+				if (!sensors[i][j].touchList.isEmpty()) collisions++;
 			}
 			
 			//	If there are enough collisions in this row (as a percentage of the number of sensors
@@ -51,25 +52,22 @@ public class Container extends GameObject
 				//	Add each object from the sensors to the destroyable list
 				for (int j = 0; j < numCols ; ++j)
 				{
-						destroyableObjects.add(sensors[i][j].touchingObject);
+					destroyableObjects.addAll(sensors[i][j].touchList);
 				}
 				
 				TetrisLevel.score += 100;
 			}
 		}
 		
-		//	Clear all sensors that have one of these objects touching them
+		//	Clear all sensors that have no more objects touching them
 		for (int i = 0; i < numRows; i++)
 		{
 			for (int j = 0; j < numCols; ++j)
 			{
-				for (GameObject g: destroyableObjects)
+				sensors[i][j].touchList.removeAll(destroyableObjects);
+				if (sensors[i][j].touchList.isEmpty())
 				{
-					if (sensors[i][j].touchingObject == g)
-					{
-						sensors[i][j].touchingObject = null;
-						sensors[i][j].setVisuallyEmpty();
-					}
+					sensors[i][j].setVisuallyEmpty();
 				}
 			}
 		}

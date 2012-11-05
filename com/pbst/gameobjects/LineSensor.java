@@ -2,9 +2,14 @@ package com.pbst.gameobjects;
 
 import java.util.ArrayList;
 
+import aurelienribon.bodyeditor.BodyEditorLoader;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -18,19 +23,23 @@ import com.pbst.pibsty.size.Pixels;
 public class LineSensor extends GameObject
 {
 	public int num;
-	public GameObject touchingObject;
+	public ArrayList<GameObject> touchList;
 	private World world_;
 	private Pixels x_,y_;
+	private static final int sensorSize = 32;
 	
 	public LineSensor(Pixels x, Pixels y, World world, int num_)
 	{
 		x_ = x;
 		y_= y;
-		touchingObject = null;
+		touchList = new ArrayList<GameObject>();
 		num = num_;
 		world_ = world;
-		PolygonShape shape = new PolygonShape();
-		shape.setAsBox(new Meters(new Pixels(4)).value()/2F , new Meters(new Pixels(4)).value()/2F);
+		
+		BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("PibstyPhysicsBodies"));
+		
+		//PolygonShape shape = new PolygonShape();
+		//shape.setAsBox(new Meters(new Pixels(sensorSize)).value()/2F , new Meters(new Pixels(sensorSize)).value()/2F);
 		
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
@@ -38,17 +47,16 @@ public class LineSensor extends GameObject
 		bodyDef.fixedRotation = true;
 		
 		FixtureDef fd = new FixtureDef();
-		fd.shape = shape;
-		fd.density = 0.5F;
-		fd.friction = 0.2F;
-		fd.restitution = 0.1F;
+		//fd.shape = shape;
+		fd.density = 0.0F;
+		fd.friction = 0.0F;
+		fd.restitution = 0.0F;
 		fd.isSensor = true;
 		
 		_body = world.createBody(bodyDef);
-		_body.createFixture(fd);
+		bodyLoader.attachFixture(_body, "sensor", fd, new Meters(new Pixels(sensorSize)).value());
 		
-		_sprite = new Sprite(R.Textures.sensor, 4, 4);
-		_sprite.setPosition(x.value() - 2F, y.value() - 2F);
+		setVisuallyEmpty();
 		
 		TetrisLevel.spriteList_.add(_sprite);
 		initFixtureData();
@@ -57,14 +65,17 @@ public class LineSensor extends GameObject
 	@Override
 	public void beginCollision(GameObject collider)
 	{
-		touchingObject = collider;
+		touchList.add(collider);
 		setVisuallyTouched();
 	}
 	
 	@Override
 	public void endCollision(GameObject collider) {
-		touchingObject = null;
-		setVisuallyEmpty();
+		touchList.remove(collider);
+		if (touchList.isEmpty())
+		{
+			setVisuallyEmpty();
+		}
 	}
 	
 	@Override
@@ -74,16 +85,18 @@ public class LineSensor extends GameObject
 	public void setVisuallyTouched()
 	{
 		TetrisLevel.spriteList_.remove(_sprite);
-		_sprite = new Sprite(R.Textures.smallBox,4, 4);
-		_sprite.setPosition(x_.value() - 2F, y_.value() - 2F);
+		_sprite = new Sprite(R.Textures.smallBox, sensorSize, sensorSize);
+		_sprite.setColor(1.0f, 1.0f, 1.0f, 0.3f);
+		_sprite.setPosition(x_.value() - (sensorSize/2F), y_.value() - (sensorSize/2F));
 		TetrisLevel.spriteList_.add(_sprite);
 	}
 	
 	public void setVisuallyEmpty()
 	{
 		TetrisLevel.spriteList_.remove(_sprite);
-		_sprite = new Sprite(R.Textures.sensor,4, 4);
-		_sprite.setPosition(x_.value() - 2F, y_.value() - 2F);
+		_sprite = new Sprite(R.Textures.sensor, sensorSize, sensorSize);
+		_sprite.setColor(1.0f, 1.0f, 1.0f, 0.2f);
+		_sprite.setPosition(x_.value() - (sensorSize/2F), y_.value() - (sensorSize/2F));
 		TetrisLevel.spriteList_.add(_sprite);
 	}
 }

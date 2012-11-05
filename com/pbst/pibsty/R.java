@@ -27,28 +27,10 @@ public final class R
 	{
 		public final BitmapFont text = new BitmapFont(Gdx.files.internal("comfortaa.fnt"), false);
 		
-		//public final Texture moon	= new Texture(Gdx.files.internal("moon.png"));
 		public final Texture sensor = new Texture(Gdx.files.internal("32x32s.png"));
 		public final Texture smallBox = new Texture(Gdx.files.internal("32x32.png"));
-		//public final Texture container = new Texture(Gdx.files.internal("container.png"));
-		//public final Texture ground = new Texture(Gdx.files.internal("ground.png"));
-		//public final Texture containerEdge = new Texture(Gdx.files.internal("containerEdge.png"));
-		//public final Texture firingArea = new Texture(Gdx.files.internal("firingarea.png"));
-		/*
-		// new test objects
-		public final Texture circle = new Texture(Gdx.files.internal("circle75x75.png"));
-		public final Texture square = new Texture(Gdx.files.internal("square75x75.png"));
-		public final Texture pentagon = new Texture(Gdx.files.internal("pentagon75x75.png"));
-		public final Texture heart = new Texture(Gdx.files.internal("heart75x75.png"));
-		public final Texture tick = new Texture(Gdx.files.internal("tick75x75.png"));
 		
-		// new static objects
-		public final Texture containerWallS = new Texture(Gdx.files.internal("containerWallS33x88.png"));
-		public final Texture containerWallM = new Texture(Gdx.files.internal("containerWallM33x194.png"));
-		public final Texture containerWallL = new Texture(Gdx.files.internal("containerWallL33x300.png"));
-		public final Texture newGround = new Texture(Gdx.files.internal("ground800x70.png"));
-		*/
-		public final Texture backgroundAndContainer = new Texture(Gdx.files.internal("backgroundAndContainer.png"));
+		public final Texture backgroundAndContainer = new Texture(Gdx.files.internal("backgroundAndContainer(withoutscore).png"));
 		public final Texture sword = new Texture(Gdx.files.internal("sword.png"));
 		public final Texture box = new Texture(Gdx.files.internal("box.png"));
 		public final Texture wheel = new Texture(Gdx.files.internal("wheel.png"));
