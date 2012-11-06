@@ -3,7 +3,8 @@ package com.pbst.pibsty;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public class Text {
+public class Text 
+{
 	private int x, y;
 	private BitmapFont font;
 	public String text;
@@ -20,5 +21,4 @@ public class Text {
 	{
 		font.draw(batch, text, x, y);
 	}
-	
 }

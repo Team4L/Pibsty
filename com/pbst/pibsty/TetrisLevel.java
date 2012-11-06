@@ -28,9 +28,10 @@ import com.pbst.gameobjects.ThrowableObj;
 import com.pbst.pibsty.size.Meters;
 import com.pbst.pibsty.size.Pixels;
 
-public class TetrisLevel implements IScreen{
-	
+public class TetrisLevel implements IScreen
+{
 	private static final Vector2 GRAVITY = new Vector2(0,-9.81F);
+	public Boolean startScreen = true;
 	
 	private Container container;
 	private Text scoreText;
@@ -47,7 +48,6 @@ public class TetrisLevel implements IScreen{
 		world_.setContactListener(new CollisionListener());
 		spriteBatch_ = new SpriteBatch();
 		throwGesture_ = new ThrowGesture(camera_, new Boundary(new Vector2(100,100), 150));
-		scoreText = new Text(150, 800, "Score: NOT_SET" , R.Textures.text);
 		
 		InitialiseLevelObjects();
 	}
@@ -55,9 +55,9 @@ public class TetrisLevel implements IScreen{
 	private void InitialiseLevelObjects()
 	{
 		createGameObject(new Pixels(240), new Pixels(400), R.Textures.backgroundAndContainer, BodyType.StaticBody, false, "backgroundAndContainer");	// container object
-		container = new Container(new Pixels(68),new Pixels(115), spriteList_, world_);
-		
+		container = new Container(new Pixels(72),new Pixels(113), spriteList_, world_);
 		touchBody = createKinematic(new Pixels(240), new Pixels(400));
+		scoreText = new Text(300, 60, "Score: NOT_SET" , R.Textures.text);
 	}
 	
 	public Boolean thrown = false;
@@ -76,7 +76,7 @@ public class TetrisLevel implements IScreen{
 		world_.step(dt, 10, 10);
 		world_.clearForces();
 
-		if (timer > 3F)
+		if (timer > 8F)
 		{
 			SetEverythingAsleep();
 			System.out.println("Everything Set Asleep");
@@ -113,27 +113,31 @@ public class TetrisLevel implements IScreen{
 	void TakePlayerTurn()
 	{
 		// Spawn a new item at the top of the screen
-		
 		float random = MathUtils.random(0.0F, 100.0F);
+		float randomX = MathUtils.random(100.0F, 380.0F);
 		
-		final float x = 240.0F;
+		final float x = randomX;
 		final float y = 850.0F;
 		
-		if (random < 25)
+		if (random < 20)
 		{
-			ThrowableObj newItem = new ThrowableObj( new Pixels(x), new Pixels(y), R.Materials.block, world_,R.Textures.wheel, "wheel", gameObjects_, spriteList_);
+			ThrowableObj newItem = new ThrowableObj( new Pixels(x), new Pixels(y), R.Materials.wheel, world_,R.Textures.wheel, "wheel", gameObjects_, spriteList_);
 		}
-		else if (random < 50)
+		else if (random < 40)
 		{
-			ThrowableObj newItem = new ThrowableObj( new Pixels(x), new Pixels(y), R.Materials.block, world_,R.Textures.sword, "newSword", gameObjects_, spriteList_);
+			ThrowableObj newItem = new ThrowableObj( new Pixels(x), new Pixels(y), R.Materials.sword, world_,R.Textures.swordTextures, new String[] {"sword_breakable_hilt", "sword_breakable_blade"}, gameObjects_, spriteList_);
 		}
-		else if (random < 75)
+		else if (random < 60)
 		{
-			ThrowableObj newItem = new ThrowableObj( new Pixels(x), new Pixels(y), R.Materials.block, world_,R.Textures.trolley, "trolley_breakable_handle", "trolley_breakable_basket", "trolley_breakable_wheels", true, gameObjects_, spriteList_); 
+			ThrowableObj newItem = new ThrowableObj( new Pixels(x), new Pixels(y), R.Materials.trolley, world_,R.Textures.trolleyTextures, new String[] {"trolley_breakable_handle", "trolley_breakable_basket", "trolley_breakable_wheels"}, gameObjects_, spriteList_); 
 		}
-		else 
+		else if (random < 80)
 		{
-			ThrowableObj newItem = new ThrowableObj(new Pixels(x), new Pixels(y), R.Materials.block, world_, R.Textures.box, "box", gameObjects_, spriteList_);
+			ThrowableObj newItem = new ThrowableObj(new Pixels(x), new Pixels(y), R.Materials.box, world_, R.Textures.box, "box", gameObjects_, spriteList_);
+		}
+		else
+		{
+			ThrowableObj newItem = new ThrowableObj(new Pixels(x), new Pixels(y), R.Materials.box, world_, R.Textures.boxTextures, new String[] {"box_breakable_topleft", "box_breakable_topright", "box_breakable_bottom"}, gameObjects_, spriteList_);
 		}
 	}
 	
@@ -189,21 +193,18 @@ public class TetrisLevel implements IScreen{
 	
 	public static ArrayList<Sprite> spriteList_;
 	public static ArrayList<GameObject> gameObjects_;	//	Current list of GameObjects that exist in the level
-	private World world_;						//	Physics world for Box2D
+	private World world_;						        //	Physics world for Box2D
 	private OrthographicCamera camera_;
 	private SpriteBatch spriteBatch_;
-	private ThrowGesture throwGesture_;			//	Tests for when a swipe is registered for throwing blocks
+	private ThrowGesture throwGesture_;			        //	Tests for when a swipe is registered for throwing blocks
 	
 /******************************************
  * This methods is a quick fix - do not forget to refactor everything beneath here into something properly useable.
 *****************************************/
 	
-	//public GameObject createGameObject(Pixels x, Pixels y, Pixels width, Pixels height, Texture tex, BodyType type, Boolean isSensor, String bodyName)
 	public GameObject createGameObject(Pixels x, Pixels y, Texture tex, BodyType type, Boolean isSensor, String bodyName)
 	{
 		PolygonShape shape = new PolygonShape();
-		//shape.setAsBox(new Meters(width).value()/2F, new Meters(height).value()/2F);
-		//BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("GDSPhysicsFixtures"));
 		BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("PibstyPhysicsBodies"));
 		
 		BodyDef bodyDef = new BodyDef();
@@ -217,8 +218,6 @@ public class TetrisLevel implements IScreen{
 
 		Body body = world_.createBody(bodyDef);
 		bodyLoader.attachFixture(body, bodyName, fd, new Meters(new Pixels(tex.getWidth())).value());
-		//bodyLoader.attachFixture(body, bodyName, fd, 1);
-		//body.createFixture(fd);
 		
 		GameObject gameObject = new GameObject(createSprite(x.value(), y.value(), tex.getWidth(), tex.getHeight(),  tex), body);
 		gameObjects_.add(gameObject);

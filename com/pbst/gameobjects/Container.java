@@ -12,8 +12,8 @@ import com.pbst.pibsty.size.Pixels;
 
 public class Container extends GameObject
 {
-	private static final float percentageFillNeeded = 60.0F;
-	private static final int numRows = 10;
+	private static final float percentageFillNeeded = 100.0F;
+	private static final int numRows = 11;
 	private static final int numCols = 10;
 	World world_;
 	LineSensor[][] sensors = new LineSensor[numRows][numCols];//	Grid resolution of the various sensors
@@ -25,7 +25,7 @@ public class Container extends GameObject
 		{
 			for (int j = 0; j < numCols; ++j)
 			{
-				LineSensor sensor = new LineSensor( new Pixels(j*(375F/numCols) + x.value()), new Pixels(i*(440F/numRows) + y.value()), world, (i*numRows) + j);
+				LineSensor sensor = new LineSensor( new Pixels(j*(375F/numCols) + x.value()), new Pixels(i*(408F/numRows) + y.value()), world, (i*numRows) + j);
 				sensors[i][j] = sensor;
 			}
 		}
@@ -54,8 +54,6 @@ public class Container extends GameObject
 				{
 					destroyableObjects.addAll(sensors[i][j].touchList);
 				}
-				
-				TetrisLevel.score += 100;
 			}
 		}
 		
@@ -85,6 +83,7 @@ public class Container extends GameObject
 				TetrisLevel.gameObjects_.remove(g);
 				TetrisLevel.spriteList_.remove(g._sprite);
 				g.destroy();
+				TetrisLevel.score += 100;
 			}
 		}
 		
@@ -92,13 +91,15 @@ public class Container extends GameObject
 	}
 	
 	@Override
-	public void beginCollision(GameObject collider) {
+	public void beginCollision(GameObject collider) 
+	{
 		// TODO Auto-generated method stub
 		super.beginCollision(collider);
 	}
 	
 	@Override
-	public void endCollision(GameObject collider) {
+	public void endCollision(GameObject collider)
+	{
 		// TODO Auto-generated method stub
 		super.endCollision(collider);
 	}

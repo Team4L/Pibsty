@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
 //	Main class called by the libGDX startup code on each platform
-//		Sets up and manages the game screens; which handle their own logic
+//	Sets up and manages the game screens; which handle their own logic
 public class PibstyMain implements ApplicationListener {
 	
 	OrthographicCamera camera;

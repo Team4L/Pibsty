@@ -78,7 +78,4 @@ public class ThrowGesture {
 		camera_.unproject(touchUp_);
 		isDown_ = false;
 	}
-	
-	
-	
 }
