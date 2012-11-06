@@ -4,14 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.physics.box2d.Filter;
+import com.pbst.gameobjects.ThrowableDef;
 
 //	The resource class, mimic of android Resource "R" for consistency
 public final class R
 {
 	public static _Textures Textures;
 	public static _Materials Materials;
-	public static _FilterGroups FilterGroups;
-	public static _FilterMasks FilterMasks;
+	public static _BodyNames BodyNames;
 	
 	public R() {}
 	
@@ -19,8 +19,7 @@ public final class R
 	{
 		Textures = new _Textures();
 		Materials = new _Materials();
-		FilterGroups = new _FilterGroups();
-		FilterMasks = new _FilterMasks();
+		BodyNames = new _BodyNames();
 	}
 	
 	public final class _Textures
@@ -40,25 +39,18 @@ public final class R
 	//	A set of physics materials for easy access to properties such as friction etc
 	public final class _Materials
 	{
-		public final Material block = new Material(10F, 0.3F, 0.2F);
+		public final Material ground = new Material(10F, 0.3F, 0.2F);
+		public final Material wood = new Material(10F, 0.3F, 0.2F);
+		public final Material metal = new Material(10F, 0.3F, 0.2F);
+		public final Material rubber = new Material(10F, 0.5F, 0.7F);
 	}
 	
-	//	NB: There can only be 16 filter categories due to Box2D's data representation
-	public final class _FilterGroups
+	public final class _BodyNames
 	{
-		
-		public final short containerWalls	= 1 << 0;
-		public final short thrownMissWalls	= 1 << 1;
-		public final short thrownHitWalls	= 1 << 2;
-	}
-	
-	public final class _FilterMasks
-	{
-		private final short hitEverything 	= 0xFF;
-		private final short noCollisions	= 0;
-		
-		public final short containerWalls	= (short)(hitEverything);
-		public final short thrownMissWalls	= (short)(FilterGroups.thrownMissWalls | FilterGroups.thrownHitWalls);
-		public final short thrownHitWalls	= (short)(FilterGroups.thrownHitWalls | FilterGroups.thrownMissWalls | FilterGroups.containerWalls);
+		public final String wheel = "wheel";
+		public final String sword = "sword";
+		public final String trolley = "trolley";
+		public final String box = "box";
+		public final String sensor = "sensor";
 	}
 }

@@ -24,6 +24,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.pbst.gameobjects.Container;
 import com.pbst.gameobjects.GameObject;
+import com.pbst.gameobjects.ThrowableDef;
 import com.pbst.gameobjects.ThrowableObj;
 import com.pbst.pibsty.size.Meters;
 import com.pbst.pibsty.size.Pixels;
@@ -55,7 +56,7 @@ public class TetrisLevel implements IScreen{
 	private void InitialiseLevelObjects()
 	{
 		createGameObject(new Pixels(240), new Pixels(400), R.Textures.backgroundAndContainer, BodyType.StaticBody, false, "backgroundAndContainer");	// container object
-		container = new Container(new Pixels(68),new Pixels(115), spriteList_, world_);
+		container = new Container(new Pixels(68),new Pixels(105), spriteList_, world_);
 		
 		touchBody = createKinematic(new Pixels(240), new Pixels(400));
 	}
@@ -116,25 +117,33 @@ public class TetrisLevel implements IScreen{
 		
 		float random = MathUtils.random(0.0F, 100.0F);
 		
-		final float x = 240.0F;
-		final float y = 850.0F;
+		final Pixels x = new Pixels(240.0F);
+		final Pixels y = new Pixels(850.0F);
+		
+		ThrowableDef itemDefinition;
+		
+		ThrowableDef exampleGib = new ThrowableDef(R.Materials.rubber, R.Textures.sensor, R.BodyNames.sensor);
 		
 		if (random < 25)
 		{
-			ThrowableObj newItem = new ThrowableObj( new Pixels(x), new Pixels(y), R.Materials.block, world_,R.Textures.wheel, "wheel", gameObjects_, spriteList_);
+			itemDefinition = new ThrowableDef(R.Materials.rubber, R.Textures.wheel, R.BodyNames.wheel, new ThrowableDef[] {exampleGib, exampleGib, exampleGib});
 		}
 		else if (random < 50)
 		{
-			ThrowableObj newItem = new ThrowableObj( new Pixels(x), new Pixels(y), R.Materials.block, world_,R.Textures.sword, "newSword", gameObjects_, spriteList_);
+			itemDefinition = new ThrowableDef(R.Materials.metal, R.Textures.trolley, R.BodyNames.trolley, new ThrowableDef[] {exampleGib, exampleGib, exampleGib});
 		}
 		else if (random < 75)
 		{
-			ThrowableObj newItem = new ThrowableObj( new Pixels(x), new Pixels(y), R.Materials.block, world_,R.Textures.trolley, "trolley_breakable_handle", "trolley_breakable_basket", "trolley_breakable_wheels", true, gameObjects_, spriteList_); 
+			itemDefinition = new ThrowableDef(R.Materials.metal, R.Textures.sword, R.BodyNames.sword, new ThrowableDef[] {exampleGib, exampleGib, exampleGib});
 		}
 		else 
 		{
-			ThrowableObj newItem = new ThrowableObj(new Pixels(x), new Pixels(y), R.Materials.block, world_, R.Textures.box, "box", gameObjects_, spriteList_);
+			itemDefinition = new ThrowableDef(R.Materials.wood, R.Textures.box, R.BodyNames.box, new ThrowableDef[] {exampleGib, exampleGib, exampleGib});
 		}
+		
+		ThrowableObj itemToSpawn = itemDefinition.Create(x, y, world_);
+		gameObjects_.add(itemToSpawn);
+		spriteList_.add(itemToSpawn._sprite);
 	}
 	
 	Boolean IsLevelAsleep()
@@ -211,7 +220,7 @@ public class TetrisLevel implements IScreen{
 		bodyDef.position.set(new Meters(x).value(), new Meters(y).value());
 		bodyDef.fixedRotation = false;
 		
-		FixtureDef fd = R.Materials.block.toFixtureDef();
+		FixtureDef fd = R.Materials.ground.toFixtureDef();
 		fd.isSensor = isSensor;
 		fd.shape = shape;
 
@@ -238,7 +247,7 @@ public class TetrisLevel implements IScreen{
 		bodyDef.position.set(new Meters(x).value(), new Meters(y).value());
 		bodyDef.fixedRotation = false;
 		
-		FixtureDef fd = R.Materials.block.toFixtureDef();
+		FixtureDef fd = R.Materials.rubber.toFixtureDef();
 		fd.shape = shape;
 		fd.density = 50.0F;
 

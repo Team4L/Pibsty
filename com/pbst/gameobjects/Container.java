@@ -81,10 +81,10 @@ public class Container extends GameObject
 			// destroy each gameobject
 			if (g._body.getType() == BodyType.DynamicBody)
 			{
+				g.destroy();
 				world_.destroyBody(g._body);
 				TetrisLevel.gameObjects_.remove(g);
 				TetrisLevel.spriteList_.remove(g._sprite);
-				g.destroy();
 			}
 		}
 		
