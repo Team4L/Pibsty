@@ -79,14 +79,15 @@ public class LineSensor extends GameObject
 	}
 	
 	@Override
-	public void destroy() {
+	public void destroy()
+	{
 	}
 	
 	public void setVisuallyTouched()
 	{
 		TetrisLevel.spriteList_.remove(_sprite);
 		_sprite = new Sprite(R.Textures.smallBox, sensorSize, sensorSize);
-		_sprite.setColor(1.0f, 1.0f, 1.0f, 0.3f);
+		_sprite.setColor(1.0f, 1.0f, 1.0f, 0.2f);
 		_sprite.setPosition(x_.value() - (sensorSize/2F), y_.value() - (sensorSize/2F));
 		TetrisLevel.spriteList_.add(_sprite);
 	}
@@ -95,7 +96,7 @@ public class LineSensor extends GameObject
 	{
 		TetrisLevel.spriteList_.remove(_sprite);
 		_sprite = new Sprite(R.Textures.sensor, sensorSize, sensorSize);
-		_sprite.setColor(1.0f, 1.0f, 1.0f, 0.2f);
+		_sprite.setColor(1.0f, 1.0f, 1.0f, 0.05f);
 		_sprite.setPosition(x_.value() - (sensorSize/2F), y_.value() - (sensorSize/2F));
 		TetrisLevel.spriteList_.add(_sprite);
 	}
