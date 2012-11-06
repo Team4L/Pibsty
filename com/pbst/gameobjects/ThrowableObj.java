@@ -52,29 +52,16 @@ public class ThrowableObj extends GameObject
 		
 		initFixtureData();
 	}
+
 	
-	public ThrowableObj(Pixels x, Pixels y, Material material, World world, Texture texture, String bodyName1, String bodyName2, String bodyName3, boolean breakable, ArrayList<GameObject> gameObjects, ArrayList<Sprite> spriteList)
+	public ThrowableObj(Pixels x, Pixels y, Material material, World world, Texture[] texture, String[] bodyNames, ArrayList<GameObject> gameObjects, ArrayList<Sprite> spriteList)
 	{
 		BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("PibstyPhysicsBodies"));
 		
-		BodyDef bodyDef = new BodyDef();
-		bodyDef.type = BodyType.DynamicBody;
-		bodyDef.position.set(new Meters(x).value(), new Meters(y).value());
-		bodyDef.fixedRotation = false;
-		
-		FixtureDef fd = material.toFixtureDef();
-		
-		_body = world.createBody(bodyDef);
-		bodyLoader.attachFixture(_body, bodyName1, fd, new Meters(new Pixels(texture.getWidth())).value());
-		bodyLoader.attachFixture(_body, bodyName2, fd, new Meters(new Pixels(texture.getWidth())).value());
-		bodyLoader.attachFixture(_body, bodyName3, fd, new Meters(new Pixels(texture.getWidth())).value());
-		
-		_sprite = new Sprite(texture);
-		_sprite.setPosition(x.value(), y.value());
-		
-		initFixtureData();
-		
-		isBreakable = breakable;
+		for(int i = 0; i < bodyNames.length; i++)
+		{
+			ThrowableObj Piece = new ThrowableObj(x, y, material, world, texture[i], bodyNames[i], gameObjects, spriteList);
+		}
 	}
 	
 	@Override
@@ -84,7 +71,8 @@ public class ThrowableObj extends GameObject
 	}
 	
 	@Override
-	public void endCollision(GameObject collider) {
+	public void endCollision(GameObject collider) 
+	{
 		
 	}
 	
