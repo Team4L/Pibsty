@@ -116,11 +116,11 @@ public class TetrisLevel implements IScreen
 		float random = MathUtils.random(0.0F, 100.0F);
 		float randomX = MathUtils.random(100.0F, 380.0F);
 		
-		final float x = randomX;
-		final float y = 850.0F;
+		final Pixels x = new Pixels(randomX);
+		final Pixels y = new Pixels(850.0F);
 		
 		ThrowableDef exampleGib = new ThrowableDef(R.Materials.rubber, R.Textures.sensor, R.BodyNames.sensor);
-		
+		ThrowableDef itemDefinition;
 		if (random < 25)
 		{
 			itemDefinition = new ThrowableDef(R.Materials.rubber, R.Textures.wheel, R.BodyNames.wheel, new ThrowableDef[] {exampleGib, exampleGib, exampleGib});

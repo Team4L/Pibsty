@@ -60,7 +60,9 @@ public class ThrowableObj extends GameObject
 		
 		for(int i = 0; i < bodyNames.length; i++)
 		{
-			ThrowableObj Piece = new ThrowableObj(x, y, material, world, texture[i], bodyNames[i], gameObjects, spriteList);
+			ThrowableObj Piece = new ThrowableObj(x, y, material, texture[i], bodyNames[i], world, null);
+			TetrisLevel.gameObjects_.add(Piece);
+			TetrisLevel.spriteList_.add(Piece._sprite);
 		}
 	}
 	
