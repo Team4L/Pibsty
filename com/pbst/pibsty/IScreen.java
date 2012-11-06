@@ -7,4 +7,11 @@ public interface IScreen {
 	void Render(float dt);
 	
 	void Dispose();
+
+	boolean isClosing();
+
+	boolean hasNextScreen();
+
+	IScreen getNextScreen();
+	
 }

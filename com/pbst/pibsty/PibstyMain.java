@@ -1,5 +1,7 @@
 package com.pbst.pibsty;
 
+import java.util.Stack;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -9,7 +11,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 public class PibstyMain implements ApplicationListener {
 	
 	OrthographicCamera camera;
-	IScreen gameScreen;
+	Stack<IScreen> gameScreens;
 	
 	// Initialise the game
 	@Override
@@ -21,15 +23,36 @@ public class PibstyMain implements ApplicationListener {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false,  480 , 800 );
 		
-		gameScreen = new TetrisLevel(camera);
+		gameScreens = new Stack<IScreen>();
+		gameScreens.push(new TetrisLevel(camera));
 	}
 
 	//	Render the graphics each frame
 	@Override
 	public void render()
 	{
-		gameScreen.Update(Gdx.graphics.getDeltaTime());
-		gameScreen.Render(Gdx.graphics.getDeltaTime());
+		if (gameScreens.isEmpty())
+		{
+			Gdx.app.exit();
+			return;
+		}
+		
+		final IScreen screen = gameScreens.peek();
+		screen.Update(Gdx.graphics.getDeltaTime());
+		screen.Render(Gdx.graphics.getDeltaTime());
+		
+		if (screen.isClosing())
+		{
+			gameScreens.pop();
+			if (screen.hasNextScreen())
+			{
+				gameScreens.push(screen.getNextScreen());
+			}
+		}
+		else if (screen.hasNextScreen())
+		{
+			gameScreens.push(screen.getNextScreen());
+		}
 	}
 	
 	@Override

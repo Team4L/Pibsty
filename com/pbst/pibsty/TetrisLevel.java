@@ -257,4 +257,19 @@ public class TetrisLevel implements IScreen
 		
 		return sprite;
 	}
+
+	@Override
+	public boolean isClosing() {
+		return false;
+	}
+
+	@Override
+	public boolean hasNextScreen() {
+		return false;
+	}
+
+	@Override
+	public IScreen getNextScreen() {
+		return null;
+	}
 }
