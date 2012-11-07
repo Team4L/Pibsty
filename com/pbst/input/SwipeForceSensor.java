@@ -2,6 +2,7 @@ package com.pbst.input;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
@@ -13,7 +14,7 @@ import com.pbst.pibsty.TetrisLevel;
 import com.pbst.pibsty.size.Meters;
 import com.pbst.pibsty.size.Pixels;
 
-public class SwipeForceSensor extends GameObject
+public class SwipeForceSensor extends GameObject implements SwipeSensor
 {
 	public float timeSoFar;
 	public float life;
@@ -61,5 +62,10 @@ public class SwipeForceSensor extends GameObject
 	public void beginCollision(GameObject collider) {
 		super.beginCollision(collider);
 		collider._body.applyForceToCenter(swipe.direction.mul(new Meters(new Pixels(250)).value()));
+	}
+
+	@Override
+	public Body getBody() {
+		return _body;
 	}
 }

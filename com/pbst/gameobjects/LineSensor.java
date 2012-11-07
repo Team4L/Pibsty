@@ -27,8 +27,10 @@ public class LineSensor extends GameObject
 	private World world_;
 	private Pixels x_,y_;
 	private static final int sensorSize = 32;
+	private Texture textureOn;
+	private Texture textureOff;
 	
-	public LineSensor(Pixels x, Pixels y, World world, int num_)
+	public LineSensor(Pixels x, Pixels y, World world, int num_, Boolean isTop)
 	{
 		x_ = x;
 		y_= y;
@@ -55,6 +57,18 @@ public class LineSensor extends GameObject
 		
 		_body = world.createBody(bodyDef);
 		bodyLoader.attachFixture(_body, "sensor", fd, new Meters(new Pixels(sensorSize)).value());
+		
+		
+		if (isTop)
+		{
+			textureOn = R.Textures.sensorTop;
+			textureOff = R.Textures.sensorTop;
+		}
+		else
+		{
+			textureOn = R.Textures.smallBox;
+			textureOff = R.Textures.sensor;
+		}
 		
 		setVisuallyEmpty();
 		
@@ -86,7 +100,7 @@ public class LineSensor extends GameObject
 	public void setVisuallyTouched()
 	{
 		TetrisLevel.spriteList_.remove(_sprite);
-		_sprite = new Sprite(R.Textures.smallBox, sensorSize, sensorSize);
+		_sprite = new Sprite(textureOn, sensorSize, sensorSize);
 		_sprite.setColor(1.0f, 1.0f, 1.0f, 0.2f);
 		_sprite.setPosition(x_.value() - (sensorSize/2F), y_.value() - (sensorSize/2F));
 		TetrisLevel.spriteList_.add(_sprite);
@@ -95,7 +109,7 @@ public class LineSensor extends GameObject
 	public void setVisuallyEmpty()
 	{
 		TetrisLevel.spriteList_.remove(_sprite);
-		_sprite = new Sprite(R.Textures.sensor, sensorSize, sensorSize);
+		_sprite = new Sprite(textureOff, sensorSize, sensorSize);
 		_sprite.setColor(1.0f, 1.0f, 1.0f, 0.05f);
 		_sprite.setPosition(x_.value() - (sensorSize/2F), y_.value() - (sensorSize/2F));
 		TetrisLevel.spriteList_.add(_sprite);

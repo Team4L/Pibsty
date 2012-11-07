@@ -32,32 +32,19 @@ import com.pbst.input.SwipeGesture;
 import com.pbst.pibsty.size.Meters;
 import com.pbst.pibsty.size.Pixels;
 
-public class TetrisLevel implements IScreen
+public class TetrisLevel extends IScreen
 {
-	private static final Vector2 GRAVITY = new Vector2(0,-9.81F);
-	
-	private Container container;
-	private Text scoreText;
+	public Container container;
+	public Text scoreText;
 	public static int score = 0;
 	public Boolean thrown = false;
 	public Boolean lastFrame = false;
-	public float timer = 0;
-	
-	public SwipeGesture swipeGesture;
-	public static ArrayList<Sprite> spriteList_;
-	public static ArrayList<GameObject> gameObjects_;	//	Current list of GameObjects that exist in the level
-	
 
 	TetrisLevel(OrthographicCamera camera)
 	{
-		camera_ = camera;
+		super(camera);
+		
 		swipeGesture = new SwipeGesture(72,113 + 408,375,250, camera_);
-		spriteList_ = new ArrayList<Sprite>();
-		gameObjects_ = new ArrayList<GameObject>();
-		world_ = new World(GRAVITY, true);
-		world_.setContactListener(new CollisionListener());
-		spriteBatch_ = new SpriteBatch();
-		swipeSensors = new ArrayList<SwipeForceSensor>();
 		
 		InitialiseLevelObjects();
 	}
@@ -72,6 +59,15 @@ public class TetrisLevel implements IScreen
 	@Override
 	public void Update(float dt)
 	{
+		super.Update(dt);
+		
+		if (swipeGesture.IsBeingSwiped())
+		{
+			Swipe swipe = swipeGesture.getSwipe();
+			SwipeForceSensor swipeSensor = new SwipeForceSensor(swipe, world_, 0.001f);
+			swipeSensors.add(swipeSensor);
+		}
+		
 		// Start Physics
 		if (!IsLevelAsleep() && !lastFrame)
 		{
@@ -101,30 +97,6 @@ public class TetrisLevel implements IScreen
 			TakePlayerTurn();
 		}
 		
-		
-		
-		ArrayList<SwipeForceSensor> sensorRemoval = new ArrayList<SwipeForceSensor>();
-		for (SwipeForceSensor swipeSensor : swipeSensors)
-		{
-			if (swipeSensor.IsDead(dt))
-			{
-				sensorRemoval.add(swipeSensor);
-			}
-		}
-		for (SwipeForceSensor swipeSensor : sensorRemoval)
-		{
-			world_.destroyBody(swipeSensor._body);
-			swipeSensors.remove(swipeSensor);
-		}
-		sensorRemoval.clear();
-		
-		swipeGesture.Update();
-		if (swipeGesture.IsBeingSwiped())
-		{
-			Swipe swipe = swipeGesture.getSwipe();
-			SwipeForceSensor swipeSensor = new SwipeForceSensor(swipe, world_, 0.001f);
-			swipeSensors.add(swipeSensor);
-		}
 		
 		lastFrame = currentFrame;
 		scoreText.text = "Score: " + score;
@@ -208,12 +180,12 @@ public class TetrisLevel implements IScreen
 	@Override
 	public void Dispose(){}
 	
-//PRIVATE:
-	
-	private ArrayList<SwipeForceSensor> swipeSensors;
-	private World world_;						        //	Physics world for Box2D
-	private OrthographicCamera camera_;
-	private SpriteBatch spriteBatch_;
+	@Override
+	void MovingToNextScreen()
+	{
+		isClosing = false;
+		nextScreen = null;
+	}
 	
 /******************************************
  * This methods is a quick fix - do not forget to refactor everything beneath here into something properly useable.

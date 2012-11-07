@@ -27,6 +27,7 @@ public final class R
 		public final BitmapFont text = new BitmapFont(Gdx.files.internal("comfortaa.fnt"), false);
 		
 		public final Texture sensor = new Texture(Gdx.files.internal("32x32s.png"));
+		public final Texture sensorTop = new Texture(Gdx.files.internal("32x32r.png"));
 		public final Texture smallBox = new Texture(Gdx.files.internal("32x32.png"));
 		
 		public final Texture titleScreen = new Texture(Gdx.files.internal("title_screen.png"));
@@ -56,10 +57,10 @@ public final class R
 	//	A set of physics materials for easy access to properties such as friction etc
 	public final class _Materials
 	{
-		public final Material ground = new Material(10F, 0.2F, 0.2F);
-		public final Material wood = new Material(10F, 0.2F, 0.2F);
-		public final Material metal = new Material(10F, 0.3F, 0.1F);
-		public final Material rubber = new Material(10F, 0.2F, 0.2F);
+		public final Material ground = new Material(10F, 0.8F, 0.2F);
+		public final Material wood = new Material(10F, 0.8F, 0.2F);
+		public final Material metal = new Material(10F, 0.8F, 0.1F);
+		public final Material rubber = new Material(10F, 0.9F, 0.2F);
 		public final Material anvil = new Material(500F, 0.9F, 0F);
 	}
 	

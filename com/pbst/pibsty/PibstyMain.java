@@ -24,7 +24,8 @@ public class PibstyMain implements ApplicationListener {
 		camera.setToOrtho(false,  480 , 800 );
 		
 		gameScreens = new Stack<IScreen>();
-		gameScreens.push(new TetrisLevel(camera));
+		//gameScreens.push(new TetrisLevel(camera));
+		gameScreens.push(new StartScreen(camera));
 	}
 
 	//	Render the graphics each frame
@@ -48,10 +49,12 @@ public class PibstyMain implements ApplicationListener {
 			{
 				gameScreens.push(screen.getNextScreen());
 			}
+			screen.MovingToNextScreen();
 		}
 		else if (screen.hasNextScreen())
 		{
 			gameScreens.push(screen.getNextScreen());
+			screen.MovingToNextScreen();
 		}
 	}
 	

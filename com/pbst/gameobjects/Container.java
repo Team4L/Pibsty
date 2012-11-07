@@ -21,13 +21,19 @@ public class Container extends GameObject
 	public Container(Pixels x, Pixels y, ArrayList<Sprite> slist, World world)
 	{
 		world_ = world;
-		for (int i = 0; i < numRows; ++i)
+		for (int i = 0; i < numRows-1; ++i)
 		{
 			for (int j = 0; j < numCols; ++j)
 			{
-				LineSensor sensor = new LineSensor( new Pixels(j*(375F/numCols) + x.value()), new Pixels(i*(408F/numRows) + y.value()), world, (i*numRows) + j);
+				LineSensor sensor = new LineSensor( new Pixels(j*(375F/numCols) + x.value()), new Pixels(i*(408F/numRows) + y.value()), world, (i*numRows) + j, false);
 				sensors[i][j] = sensor;
 			}
+		}
+		int i = numRows-1;
+		for (int j = 0; j < numCols; ++j)
+		{
+			LineSensor sensor = new LineSensor( new Pixels(j*(375F/numCols) + x.value()), new Pixels(i*(408F/numRows) + y.value()), world, (i*numRows) + j, true);
+			sensors[i][j] = sensor;
 		}
 	}
 	
