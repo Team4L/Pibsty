@@ -10,6 +10,7 @@ public class ThrowableDef
 	public Material material;
 	public Texture texture;
 	public String bodyName;
+	public float gravityScale;
 	public ThrowableDef[] gibs;
 	
 	public ThrowableDef(Material material_, Texture texture_, String bodyName_)
@@ -28,11 +29,22 @@ public class ThrowableDef
 		bodyName = bodyName_;
 		
 		gibs = gibs_;
+		gravityScale = 0.1F;
+	}
+	
+	public ThrowableDef(Material material_, Texture texture_, String bodyName_, ThrowableDef[] gibs_, float gravityScale_)
+	{
+		material = material_;
+		texture = texture_;
+		bodyName = bodyName_;
+		
+		gibs = gibs_;
+		gravityScale = gravityScale_;
 	}
 	
 	public ThrowableObj Create(Pixels x_, Pixels y_, World world_)
 	{
-		return new ThrowableObj(x_, y_, material, texture, bodyName, world_, gibs);
+		return new ThrowableObj(x_, y_, material, texture, bodyName, world_, gibs, gravityScale);
 	}
 	
 }

@@ -133,32 +133,28 @@ public class TetrisLevel implements IScreen
 	void TakePlayerTurn()
 	{
 		// Spawn a new item at the top of the screen
-		float random = MathUtils.random(0.0F, 100.0F);
+		float random = MathUtils.random(0.0F, 1.0F);
 		float randomX = MathUtils.random(100.0F, 380.0F);
 		
 		final Pixels x = new Pixels(randomX);
 		final Pixels y = new Pixels(850.0F);
 		
 		ThrowableDef exampleGib = new ThrowableDef(R.Materials.rubber, R.Textures.sensor, R.BodyNames.sensor);
-		ThrowableDef itemDefinition;
-		if (random < 25)
-		{
-			itemDefinition = new ThrowableDef(R.Materials.rubber, R.Textures.wheel, R.BodyNames.wheel, new ThrowableDef[] {exampleGib, exampleGib, exampleGib});
-		}
-		else if (random < 50)
-		{
-			itemDefinition = new ThrowableDef(R.Materials.metal, R.Textures.trolley, R.BodyNames.trolley, new ThrowableDef[] {exampleGib, exampleGib, exampleGib});
-		}
-		else if (random < 75)
-		{
-			itemDefinition = new ThrowableDef(R.Materials.metal, R.Textures.sword, R.BodyNames.sword, new ThrowableDef[] {exampleGib, exampleGib, exampleGib});
-		}
-		else 
-		{
-			itemDefinition = new ThrowableDef(R.Materials.wood, R.Textures.box, R.BodyNames.box, new ThrowableDef[] {exampleGib, exampleGib, exampleGib});
-		}
+		ThrowableDef[] itemDefinitions = {
+				new ThrowableDef(R.Materials.rubber, R.Textures.wheel, R.BodyNames.wheel, new ThrowableDef[] {exampleGib, exampleGib, exampleGib}),
+				new ThrowableDef(R.Materials.metal, R.Textures.trolley, R.BodyNames.trolley, new ThrowableDef[] {exampleGib, exampleGib, exampleGib}),
+				new ThrowableDef(R.Materials.metal, R.Textures.sword, R.BodyNames.sword, new ThrowableDef[] {exampleGib, exampleGib, exampleGib}),
+				new ThrowableDef(R.Materials.wood, R.Textures.box, R.BodyNames.box, new ThrowableDef[] {exampleGib, exampleGib, exampleGib}),
+				
+				new ThrowableDef(R.Materials.rubber, R.Textures.beach_ball, R.BodyNames.beach_ball, new ThrowableDef[] {exampleGib, exampleGib, exampleGib}, 0.05F),
+				new ThrowableDef(R.Materials.rubber, R.Textures.bin_bag, R.BodyNames.bin_bag, new ThrowableDef[] {exampleGib, exampleGib, exampleGib}),
+				new ThrowableDef(R.Materials.wood, R.Textures.boot, R.BodyNames.boot, new ThrowableDef[] {exampleGib, exampleGib, exampleGib}),
+				new ThrowableDef(R.Materials.metal, R.Textures.sink, R.BodyNames.sink, new ThrowableDef[] {exampleGib, exampleGib, exampleGib}),
+				new ThrowableDef(R.Materials.anvil, R.Textures.anvil, R.BodyNames.anvil, new ThrowableDef[] {exampleGib, exampleGib, exampleGib}, 3.0F)
+		};
 		
-		ThrowableObj itemToSpawn = itemDefinition.Create(x, y, world_);
+		final int itemIndex = (int)(itemDefinitions.length * random);
+		ThrowableObj itemToSpawn = itemDefinitions[itemIndex].Create(x, y, world_);
 		gameObjects_.add(itemToSpawn);
 		spriteList_.add(itemToSpawn._sprite);
 	}

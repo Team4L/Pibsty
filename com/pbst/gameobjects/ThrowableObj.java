@@ -24,9 +24,8 @@ public class ThrowableObj extends GameObject
 	
 	public ThrowableDef[] gibs;
 	public float timeAlive;
-	private static final float GravScale = 0.1F;
 	
-	public ThrowableObj(Pixels x, Pixels y, Material material, Texture texture, String bodyName, World world, ThrowableDef[] gibs_)
+	public ThrowableObj(Pixels x, Pixels y, Material material, Texture texture, String bodyName, World world, ThrowableDef[] gibs_, float gravityScale)
 	{
 		timeAlive = 0.0F;
 		if (gibs_ != null)
@@ -48,7 +47,7 @@ public class ThrowableObj extends GameObject
 		FixtureDef fd = material.toFixtureDef();
 		
 		_body = world.createBody(bodyDef);
-		_body.setGravityScale(GravScale);
+		_body.setGravityScale(gravityScale);
 		bodyLoader.attachFixture(_body, bodyName, fd, new Meters(new Pixels(texture.getWidth())).value());
 		
 		_sprite = new Sprite(texture);
@@ -64,7 +63,7 @@ public class ThrowableObj extends GameObject
 		
 		for(int i = 0; i < bodyNames.length; i++)
 		{
-			ThrowableObj Piece = new ThrowableObj(x, y, material, texture[i], bodyNames[i], world, null);
+			ThrowableObj Piece = new ThrowableObj(x, y, material, texture[i], bodyNames[i], world, null, 0.1F);
 			TetrisLevel.gameObjects_.add(Piece);
 			TetrisLevel.spriteList_.add(Piece._sprite);
 		}
