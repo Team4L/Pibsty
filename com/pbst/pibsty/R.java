@@ -50,10 +50,10 @@ public final class R
 	//	A set of physics materials for easy access to properties such as friction etc
 	public final class _Materials
 	{
-		public final Material ground = new Material(10F, 0.8F, 0.2F);
-		public final Material wood = new Material(50F, 0.8F, 0.2F);
-		public final Material metal = new Material(1000F, 0.3F, 0.1F);
-		public final Material rubber = new Material(10F, 0.2F, 0.8F);
+		public final Material ground = new Material(10F, 0.2F, 0.2F);
+		public final Material wood = new Material(10F, 0.2F, 0.2F);
+		public final Material metal = new Material(10F, 0.3F, 0.1F);
+		public final Material rubber = new Material(10F, 0.2F, 0.2F);
 	}
 	
 	public final class _BodyNames

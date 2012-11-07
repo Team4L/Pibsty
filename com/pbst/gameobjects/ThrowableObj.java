@@ -23,9 +23,12 @@ public class ThrowableObj extends GameObject
 {
 	
 	public ThrowableDef[] gibs;
+	public float timeAlive;
+	private static final float GravScale = 0.1F;
 	
 	public ThrowableObj(Pixels x, Pixels y, Material material, Texture texture, String bodyName, World world, ThrowableDef[] gibs_)
 	{
+		timeAlive = 0.0F;
 		if (gibs_ != null)
 		{
 			gibs = gibs_;
@@ -45,6 +48,7 @@ public class ThrowableObj extends GameObject
 		FixtureDef fd = material.toFixtureDef();
 		
 		_body = world.createBody(bodyDef);
+		_body.setGravityScale(GravScale);
 		bodyLoader.attachFixture(_body, bodyName, fd, new Meters(new Pixels(texture.getWidth())).value());
 		
 		_sprite = new Sprite(texture);
@@ -63,6 +67,20 @@ public class ThrowableObj extends GameObject
 			ThrowableObj Piece = new ThrowableObj(x, y, material, texture[i], bodyNames[i], world, null);
 			TetrisLevel.gameObjects_.add(Piece);
 			TetrisLevel.spriteList_.add(Piece._sprite);
+		}
+	}
+	
+	@Override
+	public void Update(float dt)
+	{
+		timeAlive += dt;
+		if ((timeAlive > 2.0F) && (timeAlive < 2.5F))
+		{
+			_body.setGravityScale(1.5F);
+		}
+		if (timeAlive > 2.5F)
+		{
+			_body.setGravityScale(1.0F);
 		}
 	}
 	
@@ -92,8 +110,8 @@ public class ThrowableObj extends GameObject
 			TetrisLevel.gameObjects_.add(gib);
 			TetrisLevel.spriteList_.add(gib._sprite);
 			
-			gib._body.applyForceToCenter(MathUtils.random(-500F,500F), MathUtils.random(-500F,500F));
-			gib._body.applyTorque(MathUtils.random(-50F,50F));
+			gib._body.applyForceToCenter(MathUtils.random(-50F,50F), MathUtils.random(-50F,50F));
+			gib._body.applyTorque(MathUtils.random(-10F,10F));
 		}
 	}
 }

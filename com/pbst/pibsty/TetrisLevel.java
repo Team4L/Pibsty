@@ -26,6 +26,9 @@ import com.pbst.gameobjects.Container;
 import com.pbst.gameobjects.GameObject;
 import com.pbst.gameobjects.ThrowableDef;
 import com.pbst.gameobjects.ThrowableObj;
+import com.pbst.input.Swipe;
+import com.pbst.input.SwipeForceSensor;
+import com.pbst.input.SwipeGesture;
 import com.pbst.pibsty.size.Meters;
 import com.pbst.pibsty.size.Pixels;
 
@@ -36,18 +39,25 @@ public class TetrisLevel implements IScreen
 	private Container container;
 	private Text scoreText;
 	public static int score = 0;
-	private Body touchBody;
+	public Boolean thrown = false;
+	public Boolean lastFrame = false;
+	public float timer = 0;
+	
+	public SwipeGesture swipeGesture;
+	public static ArrayList<Sprite> spriteList_;
+	public static ArrayList<GameObject> gameObjects_;	//	Current list of GameObjects that exist in the level
+	
 
 	TetrisLevel(OrthographicCamera camera)
 	{
 		camera_ = camera;
-		
+		swipeGesture = new SwipeGesture(72,113 + 408,375,250, camera_);
 		spriteList_ = new ArrayList<Sprite>();
 		gameObjects_ = new ArrayList<GameObject>();
 		world_ = new World(GRAVITY, true);
 		world_.setContactListener(new CollisionListener());
 		spriteBatch_ = new SpriteBatch();
-		throwGesture_ = new ThrowGesture(camera_, new Boundary(new Vector2(100,100), 150));
+		swipeSensors = new ArrayList<SwipeForceSensor>();
 		
 		InitialiseLevelObjects();
 	}
@@ -56,13 +66,8 @@ public class TetrisLevel implements IScreen
 	{
 		createGameObject(new Pixels(240), new Pixels(400), R.Textures.backgroundAndContainer, BodyType.StaticBody, false, "backgroundAndContainer");	// container object
 		container = new Container(new Pixels(72),new Pixels(113), spriteList_, world_);
-		touchBody = createKinematic(new Pixels(240), new Pixels(400));
 		scoreText = new Text(300, 60, "Score: NOT_SET" , R.Textures.text);
 	}
-	
-	public Boolean thrown = false;
-	public Boolean lastFrame = false;
-	public float timer = 0;
 	
 	@Override
 	public void Update(float dt)
@@ -96,14 +101,29 @@ public class TetrisLevel implements IScreen
 			TakePlayerTurn();
 		}
 		
-		if (Gdx.input.isTouched())
+		
+		
+		ArrayList<SwipeForceSensor> sensorRemoval = new ArrayList<SwipeForceSensor>();
+		for (SwipeForceSensor swipeSensor : swipeSensors)
 		{
-			touchBody.setActive(true);
-			touchBody.setTransform(new Vector2( new Meters(new Pixels(Gdx.input.getX())).value(), new Meters(new Pixels(800-Gdx.input.getY())).value()), 0);
+			if (swipeSensor.IsDead(dt))
+			{
+				sensorRemoval.add(swipeSensor);
+			}
 		}
-		else
+		for (SwipeForceSensor swipeSensor : sensorRemoval)
 		{
-			touchBody.setActive(false);
+			world_.destroyBody(swipeSensor._body);
+			swipeSensors.remove(swipeSensor);
+		}
+		sensorRemoval.clear();
+		
+		swipeGesture.Update();
+		if (swipeGesture.IsBeingSwiped())
+		{
+			Swipe swipe = swipeGesture.getSwipe();
+			SwipeForceSensor swipeSensor = new SwipeForceSensor(swipe, world_, 0.001f);
+			swipeSensors.add(swipeSensor);
 		}
 		
 		lastFrame = currentFrame;
@@ -172,6 +192,7 @@ public class TetrisLevel implements IScreen
 		
 		for (GameObject g: gameObjects_)
 		{
+			g.Update(dt);
 			g._sprite.setPosition(new Pixels(new Meters(g._body.getPosition().x)).value() - g._sprite.getWidth()/2F, new Pixels(new Meters(g._body.getPosition().y)).value() - g._sprite.getHeight()/2F);
 			g._sprite.setRotation(MathUtils.radiansToDegrees * (g._body.getAngle()));
 		}
@@ -193,12 +214,10 @@ public class TetrisLevel implements IScreen
 	
 //PRIVATE:
 	
-	public static ArrayList<Sprite> spriteList_;
-	public static ArrayList<GameObject> gameObjects_;	//	Current list of GameObjects that exist in the level
+	private ArrayList<SwipeForceSensor> swipeSensors;
 	private World world_;						        //	Physics world for Box2D
 	private OrthographicCamera camera_;
 	private SpriteBatch spriteBatch_;
-	private ThrowGesture throwGesture_;			        //	Tests for when a swipe is registered for throwing blocks
 	
 /******************************************
  * This methods is a quick fix - do not forget to refactor everything beneath here into something properly useable.

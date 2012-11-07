@@ -47,4 +47,8 @@ public class GameObject {
 	{
 		isAlive = false;
 	}
+	
+	public void Update(float dt)
+	{
+	}
 }
