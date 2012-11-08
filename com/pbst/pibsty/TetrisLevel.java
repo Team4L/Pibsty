@@ -36,8 +36,8 @@ import com.pbst.pibsty.size.Pixels;
 public class TetrisLevel extends IScreen
 {
 	public Container container;
-	public Text scoreText;
-	public static int score = 0;
+	//public Text scoreText;
+	//public static int score = 0;
 	public Boolean thrown = false;
 	public Boolean lastFrame = false;
 
@@ -54,7 +54,7 @@ public class TetrisLevel extends IScreen
 	{
 		createGameObject(new Pixels(240), new Pixels(400), R.Textures.backgroundAndContainer, BodyType.StaticBody, false, "backgroundAndContainer");	// container object
 		container = new Container(new Pixels(72),new Pixels(113), spriteList_, world_);
-		scoreText = new Text(300, 60, "Score: NOT_SET" , R.Textures.text);
+		//scoreText = new Text(300, 60, "Score: NOT_SET" , R.Textures.text);
 	}
 	
 	@Override
@@ -105,7 +105,7 @@ public class TetrisLevel extends IScreen
 		}
 		
 		lastFrame = currentFrame;
-		scoreText.text = "Score: " + score;
+		//scoreText.text = "Score: " + score;
 	}
 	
 	void WinningScene(float dt)
@@ -217,7 +217,7 @@ public class TetrisLevel extends IScreen
 			s.draw(spriteBatch_);
 		}
 		
-		scoreText.draw(spriteBatch_); // Fix it
+		//scoreText.draw(spriteBatch_); // Fix it
 		spriteBatch_.end();
 	}
 

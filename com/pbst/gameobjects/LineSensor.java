@@ -29,6 +29,7 @@ public class LineSensor extends GameObject
 	private static final int sensorSize = 32;
 	private Texture textureOn;
 	private Texture textureOff;
+	private float alphaFactor = 1.0f;
 	
 	public LineSensor(Pixels x, Pixels y, World world, int num_, Boolean isTop)
 	{
@@ -39,17 +40,13 @@ public class LineSensor extends GameObject
 		world_ = world;
 		
 		BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("PibstyPhysicsBodies"));
-		
-		//PolygonShape shape = new PolygonShape();
-		//shape.setAsBox(new Meters(new Pixels(sensorSize)).value()/2F , new Meters(new Pixels(sensorSize)).value()/2F);
-		
+
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = BodyType.StaticBody;
 		bodyDef.position.set(new Meters(x).value(), new Meters(y).value());
 		bodyDef.fixedRotation = true;
 		
 		FixtureDef fd = new FixtureDef();
-		//fd.shape = shape;
 		fd.density = 0.0F;
 		fd.friction = 0.0F;
 		fd.restitution = 0.0F;
@@ -61,12 +58,13 @@ public class LineSensor extends GameObject
 		
 		if (isTop)
 		{
-			textureOn = R.Textures.sensorTop;
-			textureOff = R.Textures.sensorTop;
+			textureOn = R.Textures.smallBox;
+			textureOff = R.Textures.smallBox;
+			alphaFactor = 3.0F;
 		}
 		else
 		{
-			textureOn = R.Textures.smallBox;
+			textureOn = R.Textures.sensorTop;
 			textureOff = R.Textures.sensor;
 		}
 		
@@ -101,7 +99,7 @@ public class LineSensor extends GameObject
 	{
 		TetrisLevel.spriteList_.remove(_sprite);
 		_sprite = new Sprite(textureOn, sensorSize, sensorSize);
-		_sprite.setColor(1.0f, 1.0f, 1.0f, 0.2f);
+		_sprite.setColor(1.0f, 1.0f, 1.0f, 0.2f * alphaFactor);
 		_sprite.setPosition(x_.value() - (sensorSize/2F), y_.value() - (sensorSize/2F));
 		TetrisLevel.spriteList_.add(_sprite);
 	}
@@ -110,7 +108,7 @@ public class LineSensor extends GameObject
 	{
 		TetrisLevel.spriteList_.remove(_sprite);
 		_sprite = new Sprite(textureOff, sensorSize, sensorSize);
-		_sprite.setColor(1.0f, 1.0f, 1.0f, 0.05f);
+		_sprite.setColor(1.0f, 1.0f, 1.0f, 0.05f * alphaFactor);
 		_sprite.setPosition(x_.value() - (sensorSize/2F), y_.value() - (sensorSize/2F));
 		TetrisLevel.spriteList_.add(_sprite);
 	}

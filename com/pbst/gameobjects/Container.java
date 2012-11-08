@@ -111,7 +111,7 @@ public class Container extends GameObject
 				world_.destroyBody(g._body);
 				TetrisLevel.gameObjects_.remove(g);
 				TetrisLevel.spriteList_.remove(g._sprite);
-				TetrisLevel.score += 100;
+				//TetrisLevel.score += 100;
 			}
 		}
 		
