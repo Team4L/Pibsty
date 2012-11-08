@@ -3,6 +3,7 @@ package com.pbst.pibsty;
 import aurelienribon.bodyeditor.BodyEditorLoader;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -35,7 +36,7 @@ public class HighScoresScreen extends IScreen
 	{
 		createGameObject(new Pixels(240), new Pixels(400), R.Textures.highScoreScreen, BodyType.StaticBody, false, "backgroundAndContainer");	// container object
 		
-		startButton = new MenuButton(new Pixels(240), new Pixels(3000), R.Textures.startButton, BodyType.DynamicBody, false, R.BodyNames.start_button, world_);
+		startButton = new MenuButton(new Pixels(240), new Pixels(3000), R.Textures.startButton, R.Sounds.metal, BodyType.DynamicBody, false, R.BodyNames.start_button, world_);
 		gameObjects_.add(startButton);
 		spriteList_.add(startButton._sprite);
 	}

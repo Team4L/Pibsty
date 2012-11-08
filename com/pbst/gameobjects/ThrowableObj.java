@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import aurelienribon.bodyeditor.BodyEditorLoader;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.pbst.pibsty.Material;
+import com.pbst.pibsty.R;
 import com.pbst.pibsty.TetrisLevel;
 import com.pbst.pibsty.size.Meters;
 import com.pbst.pibsty.size.Pixels;
@@ -24,9 +26,12 @@ public class ThrowableObj extends GameObject
 	
 	public ThrowableDef[] gibs;
 	public float timeAlive;
+	public Sound sound;
+	public float volume = 1.0f;
 	
-	public ThrowableObj(Pixels x, Pixels y, Material material, Texture texture, String bodyName, World world, ThrowableDef[] gibs_, float gravityScale)
+	public ThrowableObj(Pixels x, Pixels y, Material material, Texture texture, Sound sound_, String bodyName, World world, ThrowableDef[] gibs_, float gravityScale)
 	{
+		sound = sound_;
 		timeAlive = 0.0F;
 		if (gibs_ != null)
 		{
@@ -63,7 +68,7 @@ public class ThrowableObj extends GameObject
 		
 		for(int i = 0; i < bodyNames.length; i++)
 		{
-			ThrowableObj Piece = new ThrowableObj(x, y, material, texture[i], bodyNames[i], world, null, 0.1F);
+			ThrowableObj Piece = new ThrowableObj(x, y, material, texture[i], null, bodyNames[i], world, null, 0.1F);
 			TetrisLevel.gameObjects_.add(Piece);
 			TetrisLevel.spriteList_.add(Piece._sprite);
 		}
@@ -81,12 +86,21 @@ public class ThrowableObj extends GameObject
 		{
 			_body.setGravityScale(1.0F);
 		}
+		
+		if (volume < 1.0f)
+		{
+			volume *= 1.1f;
+		}
 	}
 	
 	@Override
 	public void beginCollision(GameObject collider)
 	{
-		
+		if (collider.getClass() != LineSensor.class)
+		{
+			sound.play(volume);
+			volume *= 0.2f;
+		}
 	}
 	
 	@Override
@@ -111,6 +125,9 @@ public class ThrowableObj extends GameObject
 			
 			gib._body.applyForceToCenter(MathUtils.random(-50F,50F), MathUtils.random(-50F,50F));
 			gib._body.applyTorque(MathUtils.random(-10F,10F));
+			
+			Sound explosionSound = R.Sounds.explosion;
+			explosionSound.play();
 		}
 	}
 }

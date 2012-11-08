@@ -3,6 +3,7 @@ package com.pbst.pibsty;
 import aurelienribon.bodyeditor.BodyEditorLoader;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -37,9 +38,9 @@ public class StartScreen extends IScreen
 	{
 		createGameObject(new Pixels(240), new Pixels(400), R.Textures.titleScreen, BodyType.StaticBody, false, "backgroundAndContainer");	// container object
 		
-		startButton = new MenuButton(new Pixels(240), new Pixels(3000), R.Textures.startButton, BodyType.DynamicBody, false, R.BodyNames.start_button, world_);
-		quitButton = new MenuButton(new Pixels(240), new Pixels(2000), R.Textures.quitButton, BodyType.DynamicBody, false, R.BodyNames.quit_button, world_);
-		highScoresButton = new MenuButton(new Pixels(280), new Pixels(1000), R.Textures.highScoresButton, BodyType.DynamicBody, false, R.BodyNames.highscores_button, world_);
+		startButton = new MenuButton(new Pixels(220), new Pixels(3000), R.Textures.startButton, R.Sounds.metal, BodyType.DynamicBody, false, R.BodyNames.start_button, world_);
+		quitButton = new MenuButton(new Pixels(140), new Pixels(2000), R.Textures.quitButton, R.Sounds.rubber, BodyType.DynamicBody, false, R.BodyNames.quit_button, world_);
+		highScoresButton = new MenuButton(new Pixels(290), new Pixels(1000), R.Textures.highScoresButton, R.Sounds.wood, BodyType.DynamicBody, false, R.BodyNames.highscores_button, world_);
 		
 		gameObjects_.add(startButton);
 		spriteList_.add(startButton._sprite);
@@ -49,6 +50,10 @@ public class StartScreen extends IScreen
 		
 		gameObjects_.add(highScoresButton);
 		spriteList_.add(highScoresButton._sprite);
+		
+		Music bgMusic = Gdx.audio.newMusic(Gdx.files.internal("Nationale2_-_Elements.mp3"));
+		bgMusic.setLooping(true);
+		bgMusic.play();
 	}
 	
 	

@@ -1,6 +1,7 @@
 package com.pbst.pibsty;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.physics.box2d.Filter;
@@ -12,6 +13,7 @@ public final class R
 	public static _Textures Textures;
 	public static _Materials Materials;
 	public static _BodyNames BodyNames;
+	public static _Sounds Sounds;
 	
 	public R() {}
 	
@@ -20,6 +22,7 @@ public final class R
 		Textures = new _Textures();
 		Materials = new _Materials();
 		BodyNames = new _BodyNames();
+		Sounds = new _Sounds();
 	}
 	
 	public final class _Textures
@@ -54,14 +57,22 @@ public final class R
 		public final Texture[] boxTextures = new Texture[] {new Texture (Gdx.files.internal("box_breakable_topleft.png")), new Texture (Gdx.files.internal("box_breakable_topright.png")), new Texture (Gdx.files.internal("box_breakable_bottom.png"))};
 	}
 	
+	public final class _Sounds
+	{
+		public final Sound metal = Gdx.audio.newSound(Gdx.files.internal("EXP_MetalHit_00_Stereo_44.1_16.wav"));
+		public final Sound wood = Gdx.audio.newSound(Gdx.files.internal("EXP_WoodCrash_02_Stereo_44.1_16.wav"));
+		public final Sound rubber = Gdx.audio.newSound(Gdx.files.internal("EXP_PlasticHit_03_Stereo_44.1_16.wav"));
+		public final Sound explosion = Gdx.audio.newSound(Gdx.files.internal("EXP_JunkCrash_00_Stereo_44.1_16.wav"));
+	}
+	
 	//	A set of physics materials for easy access to properties such as friction etc
 	public final class _Materials
 	{
-		public final Material ground = new Material(10F, 0.8F, 0.2F);
-		public final Material wood = new Material(10F, 0.8F, 0.2F);
-		public final Material metal = new Material(10F, 0.8F, 0.1F);
-		public final Material rubber = new Material(10F, 0.9F, 0.2F);
-		public final Material anvil = new Material(500F, 0.9F, 0F);
+		public final Material ground = new Material(10F, 0.5F, 0.1F);
+		public final Material wood = new Material(10F, 0.8F, 0.3F);
+		public final Material metal = new Material(15F, 0.2F, 0.2F);
+		public final Material rubber = new Material(10F, 0.9F, 0.4F);
+		public final Material anvil = new Material(500F, 0.1F, 0F);
 	}
 	
 	public final class _BodyNames

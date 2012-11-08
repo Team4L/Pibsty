@@ -12,6 +12,7 @@ import com.pbst.pibsty.size.Pixels;
 
 public class Container extends GameObject
 {
+	public Boolean hasWon = false;
 	private static final float percentageFillNeeded = 100.0F;
 	private static final int numRows = 11;
 	private static final int numCols = 10;
@@ -42,7 +43,7 @@ public class Container extends GameObject
 		//	Create a list of destroyable objects - get them from each sensor in this row
 		ArrayList<GameObject> destroyableObjects = new ArrayList<GameObject>();
 		//	for each row
-		for (int i = 0; i < numRows; ++i)
+		for (int i = 0; i < numRows-1; ++i)
 		{
 			int collisions = 0;	//	number of collisions in this row
 			//for each sensor in the row
@@ -57,6 +58,27 @@ public class Container extends GameObject
 				
 				//	Add each object from the sensors to the destroyable list
 				for (int j = 0; j < numCols ; ++j)
+				{
+					destroyableObjects.addAll(sensors[i][j].touchList);
+				}
+			}
+		}
+		
+		//	Check if you've won
+		for (int col = 0; col < numCols; ++col)
+		{
+			final int row = numRows-1;
+			if (!sensors[row][col].touchList.isEmpty())
+			{
+				hasWon = true;
+			}
+		}
+		
+		if (hasWon)
+		{
+			for (int i = 0; i < numRows; ++i)
+			{
+				for (int j = 0; j < numCols; ++j)
 				{
 					destroyableObjects.addAll(sensors[i][j].touchList);
 				}

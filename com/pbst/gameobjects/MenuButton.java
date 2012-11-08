@@ -3,6 +3,7 @@ package com.pbst.gameobjects;
 import aurelienribon.bodyeditor.BodyEditorLoader;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -20,9 +21,12 @@ public class MenuButton extends GameObject
 {
 	
 	public Boolean isSelected = false;
+	public Sound sound;
+	public float volume = 1.0f;
 	
-	public MenuButton(Pixels x, Pixels y, Texture tex, BodyType type, Boolean isSensor, String bodyName, World world)
+	public MenuButton(Pixels x, Pixels y, Texture tex, Sound sound_, BodyType type, Boolean isSensor, String bodyName, World world)
 	{
+		sound = sound_;
 		PolygonShape shape = new PolygonShape();
 		BodyEditorLoader bodyLoader = new BodyEditorLoader(Gdx.files.internal("PibstyPhysicsBodies"));
 		
@@ -51,6 +55,12 @@ public class MenuButton extends GameObject
 		if (collider.getClass() == SwipeMenuSelector.class)
 		{
 			isSelected = true;
+		}
+		
+		if (collider.getClass() != LineSensor.class)
+		{
+			sound.play(volume);
+			volume *= 0.8f;
 		}
 	}
 }
